@@ -66,3 +66,26 @@ export const postSignup = async (body: SignupRequestBody): Promise<string> => {
     throw new Error('회원가입에 실패했습니다.')
   }
 }
+
+/**
+ * GET /api/user/check-email?email=...
+ */
+export const getCheckEmail = async (email: string): Promise<string> => {
+  try {
+    const { data } = await axiosInstance.get<ApiEnvelope<string>>('/api/user/check-email', {
+      params: { email },
+    })
+    if (data.code !== 'SUCCESS' || data.data === null) {
+      throw new Error(data.message || '이메일 확인에 실패했습니다.')
+    }
+    return data.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('이메일 확인에 실패했습니다.')
+  }
+}
