@@ -29,6 +29,7 @@ export type UserRole = 'STUDENT' | 'TEACHER'
 export interface SignupRequestBody {
   email: string
   password: string
+  passwordConfirm: string
   name: string
   age: number
   phone: string
