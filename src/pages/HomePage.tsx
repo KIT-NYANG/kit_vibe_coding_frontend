@@ -35,7 +35,7 @@ export const HomePage = () => {
   const slideLabel = `히어로 배너 ${model.heroSlides.length}장 중 표시`
 
   return (
-    <div className="min-h-screen bg-gray-200 text-gray-900">
+    <div className="min-h-screen bg-canvas text-fg">
       <MainWireHeader
         brand={model.brand}
         isLoggedIn={isLoggedIn}

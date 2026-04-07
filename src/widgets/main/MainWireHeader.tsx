@@ -1,3 +1,4 @@
+import { PanelRightClose } from 'lucide-react'
 import type { BrandLogo } from '../../entities/main/types'
 
 interface MainWireHeaderProps {
@@ -11,6 +12,9 @@ interface MainWireHeaderProps {
   onLogout: () => void
 }
 
+const textActionClass =
+  'cursor-pointer border-0 bg-transparent p-0 text-sm font-medium text-fg underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
+
 export const MainWireHeader = ({
   brand,
   onMenuClick,
@@ -21,50 +25,33 @@ export const MainWireHeader = ({
   onLogout,
 }: MainWireHeaderProps) => {
   return (
-    <header className="border-b border-gray-300/80 bg-gray-100 px-4 py-3 sm:px-6">
+    <header className="border-b border-palette-primary/15 bg-surface/95 px-4 py-3 backdrop-blur-sm sm:px-6">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 sm:gap-4">
         <div className="flex min-w-0 flex-1 items-center gap-3">
-          <span className="sr-only">{brand.alt}</span>
-          <div
-            aria-hidden
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-white shadow-sm ring-1 ring-gray-200"
-          >
-            <span className="select-none text-xl leading-none">🐐🐐</span>
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-bold text-gray-900">{brand.title}</p>
-            <p className="truncate text-xs text-gray-500">{brand.subtitle}</p>
-          </div>
+          <img
+            alt={brand.alt}
+            className="h-9 w-auto max-h-10 max-w-[min(200px,55vw)] shrink-0 object-contain object-left sm:h-11 sm:max-h-12 sm:max-w-[220px]"
+            decoding="async"
+            src="/nacom-logo.png"
+          />
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-3 sm:gap-4">
           {isLoggedIn ? (
             <>
-              <p className="max-w-[9rem] truncate text-xs text-gray-800 sm:max-w-xs sm:text-sm">
-                <span className="font-medium text-gray-900">{welcomeName ?? '회원'}</span>님 환영합니다.
+              <p className="max-w-[9rem] truncate text-xs text-fg-subtle sm:max-w-xs sm:text-sm">
+                <span className="font-medium text-fg">{welcomeName ?? '회원'}</span>님 환영합니다.
               </p>
-              <button
-                type="button"
-                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 sm:px-4 sm:text-sm"
-                onClick={onLogout}
-              >
+              <button className={textActionClass} type="button" onClick={onLogout}>
                 로그아웃
               </button>
             </>
           ) : (
             <>
-              <button
-                type="button"
-                className="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-900 sm:px-4 sm:text-sm"
-                onClick={onOpenLogin}
-              >
+              <button className={textActionClass} type="button" onClick={onOpenLogin}>
                 로그인
               </button>
-              <button
-                type="button"
-                className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs font-medium text-gray-800 shadow-sm hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400 sm:px-4 sm:text-sm"
-                onClick={onOpenSignup}
-              >
+              <button className={textActionClass} type="button" onClick={onOpenSignup}>
                 회원가입
               </button>
             </>
@@ -72,17 +59,10 @@ export const MainWireHeader = ({
           <button
             type="button"
             aria-label="메뉴 열기"
-            className="rounded-md p-2 text-gray-800 ring-1 ring-gray-300 bg-white hover:bg-gray-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-400"
+            className="rounded-md bg-transparent p-1.5 text-palette-primary transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
             onClick={onMenuClick}
           >
-            <svg aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                d="M4 6h16M4 12h16M4 18h16"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.75}
-              />
-            </svg>
+            <PanelRightClose aria-hidden className="h-6 w-6" strokeWidth={1.75} />
           </button>
         </div>
       </div>

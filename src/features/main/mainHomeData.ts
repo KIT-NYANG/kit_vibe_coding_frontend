@@ -4,9 +4,9 @@ const thumb = '/thumbnail-placeholder.svg'
 
 export const mainHomeData: MainHomeModel = {
   brand: {
-    alt: 'Grapes and Goats Alliance 로고',
-    title: 'Grapes & Goats',
-    subtitle: 'Alliance',
+    alt: 'NACOM 로고',
+    title: 'NACOM',
+    subtitle: '',
   },
   heroSlides: [
     { id: 's1', line: 'AI 가 학습 경로를 추천해 주는' },

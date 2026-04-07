@@ -41,23 +41,23 @@ export const LoginModal = ({ open, onClose, onSubmit }: LoginModalProps) => {
       <button
         type="button"
         aria-label="닫기"
-        className="absolute inset-0 bg-black/40"
+        className="absolute inset-0 bg-palette-primary/40"
         onClick={onClose}
       />
-      <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200">
-        <h2 id={titleId} className="text-lg font-semibold text-gray-900">
+      <div className="relative z-10 w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl ring-1 ring-palette-primary/15">
+        <h2 id={titleId} className="text-lg font-semibold text-fg">
           로그인
         </h2>
-        <p className="mt-1 text-sm text-gray-500">이메일과 비밀번호를 입력해 주세요.</p>
+        <p className="mt-1 text-sm text-fg-subtle">이메일과 비밀번호를 입력해 주세요.</p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="login-email">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="login-email">
               이메일
             </label>
             <input
               autoComplete="email"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="login-email"
               name="email"
               required
@@ -67,12 +67,12 @@ export const LoginModal = ({ open, onClose, onSubmit }: LoginModalProps) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="login-password">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="login-password">
               비밀번호
             </label>
             <input
               autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="login-password"
               name="password"
               required
@@ -91,7 +91,7 @@ export const LoginModal = ({ open, onClose, onSubmit }: LoginModalProps) => {
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50"
+              className="rounded-lg border border-palette-primary/25 bg-surface px-4 py-2 text-sm font-medium text-fg hover:bg-palette-accent/15"
               disabled={pending}
               onClick={onClose}
             >
@@ -99,7 +99,7 @@ export const LoginModal = ({ open, onClose, onSubmit }: LoginModalProps) => {
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:opacity-60"
+              className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90 disabled:opacity-60"
               disabled={pending}
             >
               {pending ? '처리 중…' : '로그인'}

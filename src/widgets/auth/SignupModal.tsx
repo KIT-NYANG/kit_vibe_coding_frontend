@@ -79,23 +79,23 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
       <button
         type="button"
         aria-label="닫기"
-        className="fixed inset-0 bg-black/40"
+        className="fixed inset-0 bg-palette-primary/40"
         onClick={onClose}
       />
-      <div className="relative z-10 my-8 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl ring-1 ring-gray-200">
-        <h2 id={titleId} className="text-lg font-semibold text-gray-900">
+      <div className="relative z-10 my-8 w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl ring-1 ring-palette-primary/15">
+        <h2 id={titleId} className="text-lg font-semibold text-fg">
           회원가입
         </h2>
-        <p className="mt-1 text-sm text-gray-500">필수 정보를 입력해 주세요.</p>
+        <p className="mt-1 text-sm text-fg-subtle">필수 정보를 입력해 주세요.</p>
 
         <form className="mt-6 max-h-[min(70vh,560px)] space-y-3 overflow-y-auto pr-1" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-email">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-email">
               이메일
             </label>
             <input
               autoComplete="email"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-email"
               name="email"
               required
@@ -105,12 +105,12 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-password">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-password">
               비밀번호
             </label>
             <input
               autoComplete="new-password"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-password"
               name="password"
               required
@@ -120,12 +120,12 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-password2">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-password2">
               비밀번호 확인
             </label>
             <input
               autoComplete="new-password"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-password2"
               name="passwordConfirm"
               required
@@ -140,12 +140,12 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             ) : null}
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-name">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-name">
               이름
             </label>
             <input
               autoComplete="name"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-name"
               name="name"
               required
@@ -155,11 +155,11 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-age">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-age">
               나이
             </label>
             <input
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-age"
               inputMode="numeric"
               min={1}
@@ -172,12 +172,12 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-phone">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-phone">
               전화번호
             </label>
             <input
               autoComplete="tel"
-              className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-phone"
               name="phone"
               placeholder="010-0000-0000"
@@ -188,11 +188,11 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700" htmlFor="signup-role">
+            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-role">
               역할
             </label>
             <select
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-role"
               name="role"
               value={role}
@@ -215,7 +215,7 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50"
+              className="rounded-lg border border-palette-primary/25 bg-surface px-4 py-2 text-sm font-medium text-fg hover:bg-palette-accent/15"
               disabled={pending}
               onClick={onClose}
             >
@@ -223,7 +223,7 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
               disabled={pending || !canSubmit}
             >
               {pending ? '처리 중…' : '가입'}
