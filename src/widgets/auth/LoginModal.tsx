@@ -4,9 +4,11 @@ interface LoginModalProps {
   open: boolean
   onClose: () => void
   onSubmit: (email: string, password: string) => Promise<void>
+  /** 세션 만료 등으로 자동으로 열릴 때 상단 안내 */
+  notice?: string | null
 }
 
-export const LoginModal = ({ open, onClose, onSubmit }: LoginModalProps) => {
+export const LoginModal = ({ open, onClose, onSubmit, notice }: LoginModalProps) => {
   const titleId = useId()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -50,7 +52,16 @@ export const LoginModal = ({ open, onClose, onSubmit }: LoginModalProps) => {
         </h2>
         <p className="mt-1 text-sm text-fg-subtle">이메일과 비밀번호를 입력해 주세요.</p>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
+        {notice ? (
+          <p
+            className="mt-4 rounded-lg bg-palette-accent/20 px-3 py-2 text-sm text-fg ring-1 ring-palette-primary/20"
+            role="status"
+          >
+            {notice}
+          </p>
+        ) : null}
+
+        <form className={`space-y-4 ${notice ? 'mt-4' : 'mt-6'}`} onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-fg-subtle" htmlFor="login-email">
               이메일
