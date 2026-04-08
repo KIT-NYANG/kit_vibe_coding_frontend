@@ -7,6 +7,8 @@ interface MainWireHeaderProps {
   isLoggedIn: boolean
   /** 로그인 시 환영 문구에 사용 */
   welcomeName?: string
+  /** 학생 등: 환영 이름 클릭 시 (예: 마이페이지) */
+  onWelcomeNameClick?: () => void
   onOpenLogin: () => void
   onOpenSignup: () => void
   onLogout: () => void
@@ -20,6 +22,7 @@ export const MainWireHeader = ({
   onMenuClick,
   isLoggedIn,
   welcomeName,
+  onWelcomeNameClick,
   onOpenLogin,
   onOpenSignup,
   onLogout,
@@ -39,8 +42,19 @@ export const MainWireHeader = ({
         <div className="flex shrink-0 items-center gap-3 sm:gap-4">
           {isLoggedIn ? (
             <>
-              <p className="max-w-[9rem] truncate text-xs text-fg-subtle sm:max-w-xs sm:text-sm">
-                <span className="font-medium text-fg">{welcomeName ?? '회원'}</span>님 환영합니다.
+              <p className="max-w-[min(20rem,85vw)] text-xs text-fg-subtle sm:text-sm">
+                {onWelcomeNameClick ? (
+                  <button
+                    type="button"
+                    className="font-medium text-fg underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+                    onClick={onWelcomeNameClick}
+                  >
+                    {welcomeName ?? '회원'}
+                  </button>
+                ) : (
+                  <span className="font-medium text-fg">{welcomeName ?? '회원'}</span>
+                )}
+                님 환영합니다.
               </p>
               <button className={textActionClass} type="button" onClick={onLogout}>
                 로그아웃

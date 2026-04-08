@@ -1,7 +1,7 @@
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
-import { formatSttStatusBadge } from '../../features/teacher/sttStatusLabel'
+import { THUMBNAIL_PLACEHOLDER } from '../../shared/lib/resolveApiAssetUrl'
 
 const formatUploadDate = (iso: string): string => {
   try {
@@ -16,17 +16,14 @@ const formatUploadDate = (iso: string): string => {
   }
 }
 
-interface TeacherLectureDetailProps {
+interface StudentLectureClassDetailProps {
   lecture: TeacherLectureCard
   onBack: () => void
-  onDeleteClick: () => void | Promise<void>
-  deletePending?: boolean
+  backLabel?: string
   clips: TeacherLectureClipRow[]
   clipsLoading: boolean
   clipsError: string | null
   onRetryClips: () => void
-  onAddClipClick: () => void
-  onClipClick: (clip: TeacherLectureClipRow) => void
   clipsTotalElements: number
   clipsPageRangeStart: number
   clipsPageRangeEnd: number
@@ -37,19 +34,18 @@ interface TeacherLectureDetailProps {
   clipsCanGoNext: boolean
   onClipsPrev: () => void
   onClipsNext: () => void
+  /** 마이페이지 경로로 들어온 경우에만 전달 — 영상 클릭 시 시청 이동 */
+  onClipWatch?: (clip: TeacherLectureClipRow) => void
 }
 
-export const TeacherLectureDetail = ({
+export const StudentLectureClassDetail = ({
   lecture,
   onBack,
-  onDeleteClick,
-  deletePending = false,
+  backLabel = '← 홈',
   clips,
   clipsLoading,
   clipsError,
   onRetryClips,
-  onAddClipClick,
-  onClipClick,
   clipsTotalElements,
   clipsPageRangeStart,
   clipsPageRangeEnd,
@@ -60,9 +56,11 @@ export const TeacherLectureDetail = ({
   clipsCanGoNext,
   onClipsPrev,
   onClipsNext,
-}: TeacherLectureDetailProps) => {
+  onClipWatch,
+}: StudentLectureClassDetailProps) => {
   const iconBtnClass =
     'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-transparent text-palette-primary transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:pointer-events-none disabled:opacity-40'
+
   return (
     <div className="space-y-6">
       <button
@@ -70,23 +68,11 @@ export const TeacherLectureDetail = ({
         className="text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
         onClick={onBack}
       >
-        ← 업로드한 강좌 목록
+        {backLabel}
       </button>
 
       <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">{lecture.title}</h1>
-          <button
-            type="button"
-            aria-busy={deletePending}
-            aria-label="강의 삭제"
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center self-end rounded-xl bg-surface text-fg-subtle shadow-sm ring-1 ring-palette-primary/15 transition hover:bg-red-50 hover:text-red-700 hover:ring-red-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary enabled:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 sm:self-auto"
-            disabled={deletePending}
-            onClick={() => void onDeleteClick()}
-          >
-            <Trash2 aria-hidden className="h-5 w-5" strokeWidth={2} />
-          </button>
-        </div>
+        <h1 className="mb-6 text-2xl font-bold tracking-tight text-fg sm:text-3xl">{lecture.title}</h1>
 
         <div className="mx-auto max-w-2xl overflow-hidden rounded-2xl bg-surface shadow-md ring-1 ring-palette-primary/12">
           <div className="aspect-video w-full overflow-hidden bg-palette-accent/25">
@@ -96,7 +82,7 @@ export const TeacherLectureDetail = ({
               decoding="async"
               src={lecture.thumbnailSrc}
               onError={(e) => {
-                e.currentTarget.src = '/thumbnail-placeholder.svg'
+                e.currentTarget.src = THUMBNAIL_PLACEHOLDER
               }}
             />
           </div>
@@ -106,6 +92,13 @@ export const TeacherLectureDetail = ({
         </div>
 
         <div className="mx-auto mt-8 max-w-2xl space-y-3 rounded-xl bg-surface px-5 py-5 ring-1 ring-palette-primary/12 sm:px-6">
+          {lecture.teacherName ? (
+            <p className="text-sm leading-relaxed text-fg">
+              <span className="font-semibold text-fg">강사</span>
+              <span className="text-fg-subtle">: </span>
+              {lecture.teacherName}
+            </p>
+          ) : null}
           <p className="text-sm leading-relaxed text-fg">
             <span className="font-semibold text-fg">카테고리</span>
             <span className="text-fg-subtle">: </span>
@@ -124,19 +117,9 @@ export const TeacherLectureDetail = ({
       </section>
 
       <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h2 className="text-base font-semibold text-fg">강의 영상</h2>
-            <p className="mt-1 text-xs text-fg-subtle">이 강좌에 등록된 영상 목록입니다.</p>
-          </div>
-          <button
-            type="button"
-            aria-label="영상 추가"
-            className="inline-flex h-10 w-10 shrink-0 items-center justify-center self-end rounded-xl bg-surface text-palette-primary shadow-sm ring-1 ring-palette-primary/15 transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
-            onClick={onAddClipClick}
-          >
-            <Plus aria-hidden className="h-5 w-5" strokeWidth={2} />
-          </button>
+        <div>
+          <h2 className="text-base font-semibold text-fg">강의 영상</h2>
+          <p className="mt-1 text-xs text-fg-subtle">이 강좌에 등록된 영상 목록입니다.</p>
         </div>
 
         {clipsLoading ? (
@@ -156,11 +139,7 @@ export const TeacherLectureDetail = ({
           <p className="mt-6 text-center text-sm text-fg-subtle">등록된 영상이 없습니다.</p>
         ) : (
           <div className="mt-6 space-y-4">
-            <div
-              className={
-                clipsShowPagination ? 'relative px-10 sm:px-12' : undefined
-              }
-            >
+            <div className={clipsShowPagination ? 'relative px-10 sm:px-12' : undefined}>
               {clipsShowPagination ? (
                 <>
                   <button
@@ -184,47 +163,65 @@ export const TeacherLectureDetail = ({
                 </>
               ) : null}
               <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {clips.map((clip) => (
-                <li key={clip.id}>
-                  <button
-                    type="button"
-                    className="flex w-full gap-3 rounded-xl bg-surface p-3 text-left ring-1 ring-palette-primary/12 transition hover:ring-palette-primary/40 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
-                    onClick={() => onClipClick(clip)}
-                  >
-                    <div className="relative h-[4.5rem] w-28 shrink-0 overflow-hidden rounded-lg bg-palette-accent/25">
-                      <img
-                        alt={`${clip.title} 썸네일`}
-                        className="h-full w-full object-cover"
-                        loading="lazy"
-                        src={clip.thumbnailSrc}
-                        onError={(e) => {
-                          e.currentTarget.src = '/thumbnail-placeholder.svg'
-                        }}
-                      />
-                      <span className="absolute bottom-1 right-1 rounded bg-palette-primary/90 px-1.5 py-0.5 text-[10px] font-medium text-palette-white">
-                        {clip.durationLabel}
-                      </span>
-                    </div>
-                    <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-                      <div className="flex min-w-0 flex-wrap items-center gap-2">
-                        <p className="line-clamp-2 min-w-0 flex-1 text-sm font-semibold text-fg">
-                          {clip.title}
-                        </p>
-                        {clip.sttStatus ? (
-                          <span className="shrink-0 rounded bg-palette-accent/40 px-1.5 py-0.5 text-[10px] font-medium text-fg-subtle">
-                            {formatSttStatusBadge(clip.sttStatus)}
+                {clips.map((clip) => (
+                  <li key={clip.id}>
+                    {onClipWatch ? (
+                      <button
+                        type="button"
+                        className="flex w-full gap-3 rounded-xl bg-surface p-3 text-left ring-1 ring-palette-primary/12 transition hover:ring-palette-primary/40 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
+                        onClick={() => onClipWatch(clip)}
+                      >
+                        <div className="relative h-[4.5rem] w-28 shrink-0 overflow-hidden rounded-lg bg-palette-accent/25">
+                          <img
+                            alt={`${clip.title} 썸네일`}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                            src={clip.thumbnailSrc}
+                            onError={(e) => {
+                              e.currentTarget.src = THUMBNAIL_PLACEHOLDER
+                            }}
+                          />
+                          <span className="absolute bottom-1 right-1 rounded bg-palette-primary/90 px-1.5 py-0.5 text-[10px] font-medium text-palette-white">
+                            {clip.durationLabel}
                           </span>
-                        ) : null}
-                      </div>
-                      {clip.description ? (
-                        <p className="line-clamp-2 text-xs leading-snug text-fg-subtle">
-                          {clip.description}
-                        </p>
-                      ) : null}
-                    </div>
-                  </button>
-                </li>
-              ))}
+                        </div>
+                        <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
+                          <p className="line-clamp-2 text-sm font-semibold text-fg">{clip.title}</p>
+                          {clip.description ? (
+                            <p className="line-clamp-2 text-xs leading-snug text-fg-subtle">
+                              {clip.description}
+                            </p>
+                          ) : null}
+                        </div>
+                      </button>
+                    ) : (
+                      <article className="flex gap-3 rounded-xl bg-surface p-3 ring-1 ring-palette-primary/12">
+                        <div className="relative h-[4.5rem] w-28 shrink-0 overflow-hidden rounded-lg bg-palette-accent/25">
+                          <img
+                            alt={`${clip.title} 썸네일`}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                            src={clip.thumbnailSrc}
+                            onError={(e) => {
+                              e.currentTarget.src = THUMBNAIL_PLACEHOLDER
+                            }}
+                          />
+                          <span className="absolute bottom-1 right-1 rounded bg-palette-primary/90 px-1.5 py-0.5 text-[10px] font-medium text-palette-white">
+                            {clip.durationLabel}
+                          </span>
+                        </div>
+                        <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
+                          <p className="line-clamp-2 text-sm font-semibold text-fg">{clip.title}</p>
+                          {clip.description ? (
+                            <p className="line-clamp-2 text-xs leading-snug text-fg-subtle">
+                              {clip.description}
+                            </p>
+                          ) : null}
+                        </div>
+                      </article>
+                    )}
+                  </li>
+                ))}
               </ul>
             </div>
             {clipsShowPagination && !clipsLoading && !clipsError ? (

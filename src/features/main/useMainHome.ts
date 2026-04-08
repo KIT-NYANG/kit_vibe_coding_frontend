@@ -1,9 +1,11 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { MainHomeModel } from '../../entities/main/types'
+import { getLectureClasses } from '../../shared/api/lectureApi'
 import { mainHomeData } from './mainHomeData'
+import { mapLectureClassToCategoryLecture } from './mapLectureClassToCategoryLecture'
 
-/** 한 번에 보이는 강의 카드 수 (와이어프레임 5열) */
-export const VISIBLE_LECTURE_COUNT = 5
+/** GET /api/lecture-class — 페이지 크기 (강좌 목록과 동일) */
+const LECTURE_LIST_PAGE_SIZE = 10
 
 export interface UseMainHomeResult {
   model: MainHomeModel
@@ -11,30 +13,37 @@ export interface UseMainHomeResult {
   goPrevSlide: () => void
   goNextSlide: () => void
   selectedCategoryId: string
-  /** 칩 선택 시 강의 슬라이드 시작 위치도 0으로 맞춤 */
   selectCategory: (id: string) => void
-  /** 현재 윈도우에 보이는 강의 (최대 5개) */
   displayedLectures: MainHomeModel['lectures']
-  /** 선택된 카테고리의 강의 총 개수 */
   totalLecturesInCategory: number
-  /** 총 개수가 5 초과일 때만 화살표 표시 */
   showLectureArrows: boolean
   canGoPrevLectures: boolean
   canGoNextLectures: boolean
   goPrevLectures: () => void
   goNextLectures: () => void
   selectedCategoryLabel: string
+  lecturesLoading: boolean
+  lecturesError: string | null
+  refetchLectures: () => Promise<void>
 }
 
 export const useMainHome = (): UseMainHomeResult => {
-  const model = useMemo(() => mainHomeData, [])
+  const staticModel = useMemo(() => mainHomeData, [])
   const [slideIndex, setSlideIndex] = useState(0)
   const [selectedCategoryId, setSelectedCategoryId] = useState(
-    () => model.categories[0]?.id ?? '',
+    () => staticModel.categories[0]?.id ?? '',
   )
-  const [lectureWindowStart, setLectureWindowStart] = useState(0)
 
-  const slideCount = model.heroSlides.length
+  const [lecturePageIndex, setLecturePageIndex] = useState(0)
+  const [displayedLectures, setDisplayedLectures] = useState<MainHomeModel['lectures']>([])
+  const [totalElements, setTotalElements] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [first, setFirst] = useState(true)
+  const [last, setLast] = useState(true)
+  const [lecturesLoading, setLecturesLoading] = useState(true)
+  const [lecturesError, setLecturesError] = useState<string | null>(null)
+
+  const slideCount = staticModel.heroSlides.length
 
   const goPrevSlide = useCallback(() => {
     if (slideCount === 0) return
@@ -46,51 +55,79 @@ export const useMainHome = (): UseMainHomeResult => {
     setSlideIndex((i) => (i + 1) % slideCount)
   }, [slideCount])
 
-  const currentSlideLine = model.heroSlides[slideIndex]?.line ?? ''
+  const currentSlideLine = staticModel.heroSlides[slideIndex]?.line ?? ''
 
-  const lecturesForCategory = useMemo(
-    () => model.lectures.filter((l) => l.categoryId === selectedCategoryId),
-    [model.lectures, selectedCategoryId],
-  )
-
-  const totalLecturesInCategory = lecturesForCategory.length
-  /** 5개씩 넘길 때 마지막 페이지 시작 인덱스 (8개 → 0, 5 / 11개 → 0, 5, 10) */
-  const maxLectureStart =
-    totalLecturesInCategory <= VISIBLE_LECTURE_COUNT
-      ? 0
-      : VISIBLE_LECTURE_COUNT *
-        Math.floor((totalLecturesInCategory - 1) / VISIBLE_LECTURE_COUNT)
+  const selectedCategoryLabel = useMemo(() => {
+    const found = staticModel.categories.find((c) => c.id === selectedCategoryId)
+    return found?.label ?? ''
+  }, [staticModel.categories, selectedCategoryId])
 
   const selectCategory = useCallback((id: string) => {
     setSelectedCategoryId(id)
-    setLectureWindowStart(0)
+    setLecturePageIndex(0)
   }, [])
 
-  const displayedLectures = useMemo(
-    () =>
-      lecturesForCategory.slice(
-        lectureWindowStart,
-        lectureWindowStart + VISIBLE_LECTURE_COUNT,
-      ),
-    [lecturesForCategory, lectureWindowStart],
+  const fetchLecturePage = useCallback(
+    async (pageNum: number) => {
+      setLecturesLoading(true)
+      setLecturesError(null)
+      try {
+        const res = await getLectureClasses({
+          page: pageNum,
+          size: LECTURE_LIST_PAGE_SIZE,
+          category: selectedCategoryLabel.trim() || undefined,
+        })
+        setLecturePageIndex(res.page)
+        setDisplayedLectures(
+          res.content.map((dto) => mapLectureClassToCategoryLecture(dto, selectedCategoryId)),
+        )
+        setTotalElements(res.totalElements)
+        setTotalPages(res.totalPages)
+        setFirst(res.first)
+        setLast(res.last)
+      } catch (e) {
+        setDisplayedLectures([])
+        setTotalElements(0)
+        setTotalPages(0)
+        setFirst(true)
+        setLast(true)
+        setLecturesError(
+          e instanceof Error ? e.message : '강의 목록을 불러오지 못했습니다.',
+        )
+      } finally {
+        setLecturesLoading(false)
+      }
+    },
+    [selectedCategoryId, selectedCategoryLabel],
   )
 
-  const showLectureArrows = totalLecturesInCategory > VISIBLE_LECTURE_COUNT
-  const canGoPrevLectures = lectureWindowStart > 0
-  const canGoNextLectures = lectureWindowStart + VISIBLE_LECTURE_COUNT < totalLecturesInCategory
+  useEffect(() => {
+    void fetchLecturePage(0)
+  }, [fetchLecturePage])
+
+  const refetchLectures = useCallback(async () => {
+    await fetchLecturePage(lecturePageIndex)
+  }, [fetchLecturePage, lecturePageIndex])
+
+  const totalLecturesInCategory = totalElements
+  const showLectureArrows = totalPages > 1
+  const canGoPrevLectures = !first
+  const canGoNextLectures = !last
 
   const goPrevLectures = useCallback(() => {
-    setLectureWindowStart((s) => Math.max(0, s - VISIBLE_LECTURE_COUNT))
-  }, [])
+    if (first) return
+    void fetchLecturePage(lecturePageIndex - 1)
+  }, [fetchLecturePage, first, lecturePageIndex])
 
   const goNextLectures = useCallback(() => {
-    setLectureWindowStart((s) => Math.min(maxLectureStart, s + VISIBLE_LECTURE_COUNT))
-  }, [maxLectureStart])
+    if (last) return
+    void fetchLecturePage(lecturePageIndex + 1)
+  }, [fetchLecturePage, last, lecturePageIndex])
 
-  const selectedCategoryLabel = useMemo(() => {
-    const found = model.categories.find((c) => c.id === selectedCategoryId)
-    return found?.label ?? ''
-  }, [model.categories, selectedCategoryId])
+  const model = useMemo<MainHomeModel>(
+    () => ({ ...staticModel, lectures: displayedLectures }),
+    [staticModel, displayedLectures],
+  )
 
   return {
     model,
@@ -107,5 +144,8 @@ export const useMainHome = (): UseMainHomeResult => {
     goPrevLectures,
     goNextLectures,
     selectedCategoryLabel,
+    lecturesLoading,
+    lecturesError,
+    refetchLectures,
   }
 }

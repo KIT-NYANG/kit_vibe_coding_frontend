@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 import type { TeacherLectureCard } from '../entities/teacher/types'
 import { useAuthSession } from '../features/auth/useAuthSession'
+import type { MainLayoutOutletContext } from '../layouts/mainLayoutContext'
 import { useMainHome } from '../features/main/useMainHome'
 import { useTeacherHome } from '../features/teacher/useTeacherHome'
 import { CategoryChipRow } from '../widgets/main/CategoryChipRow'
@@ -18,6 +19,9 @@ export const HomePage = () => {
 }
 
 const StudentHomeContent = () => {
+  const navigate = useNavigate()
+  const { openLoginModal } = useOutletContext<MainLayoutOutletContext>()
+  const { isLoggedIn } = useAuthSession()
   const {
     model,
     currentSlideLine,
@@ -33,6 +37,9 @@ const StudentHomeContent = () => {
     goPrevLectures,
     goNextLectures,
     selectedCategoryLabel,
+    lecturesLoading,
+    lecturesError,
+    refetchLectures,
   } = useMainHome()
 
   const slideLabel = `히어로 배너 ${model.heroSlides.length}장 중 표시`
@@ -54,9 +61,19 @@ const StudentHomeContent = () => {
         canGoNext={canGoNextLectures}
         canGoPrev={canGoPrevLectures}
         categoryLabel={selectedCategoryLabel}
+        error={lecturesError}
         lectures={displayedLectures}
+        loading={lecturesLoading}
+        onLectureClick={(lecture) => {
+          if (!isLoggedIn) {
+            openLoginModal()
+            return
+          }
+          navigate(`/lecture/${lecture.id}`)
+        }}
         onNext={goNextLectures}
         onPrev={goPrevLectures}
+        onRetry={() => void refetchLectures()}
         showArrows={showLectureArrows}
         totalInCategory={totalLecturesInCategory}
       />
@@ -83,6 +100,11 @@ const TeacherHomeContent = () => {
     loading,
     error,
     refetch,
+    filterCategoryDraft,
+    filterKeywordDraft,
+    setFilterCategoryDraft,
+    setFilterKeywordDraft,
+    applyFilters,
   } = useTeacherHome()
 
   const goToLectureDetail = (lecture: TeacherLectureCard) => {
@@ -96,6 +118,11 @@ const TeacherHomeContent = () => {
         canGoPrev={canGoPrev}
         currentPage={currentPage}
         error={error}
+        filterCategoryDraft={filterCategoryDraft}
+        filterKeywordDraft={filterKeywordDraft}
+        onApplyFilters={applyFilters}
+        onFilterCategoryDraftChange={setFilterCategoryDraft}
+        onFilterKeywordDraftChange={setFilterKeywordDraft}
         lectures={displayedLectures}
         loading={loading}
         onLectureClick={goToLectureDetail}

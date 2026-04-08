@@ -8,6 +8,8 @@ import { deleteLectureClass, getLectureClassById, getLectureClassLectures, postL
 import { AddLectureClipModal } from '../widgets/teacher/AddLectureClipModal'
 import { TeacherLectureDetail } from '../widgets/teacher/TeacherLectureDetail'
 
+const CLIP_PAGE_SIZE = 10
+
 export const TeacherLectureDetailPage = () => {
   const { lectureId } = useParams()
   const navigate = useNavigate()
@@ -18,17 +20,30 @@ export const TeacherLectureDetailPage = () => {
   const [notFound, setNotFound] = useState(false)
   const [deletePending, setDeletePending] = useState(false)
   const [clips, setClips] = useState<TeacherLectureClipRow[]>([])
+  const [clipPageIndex, setClipPageIndex] = useState(0)
+  const [clipsTotalElements, setClipsTotalElements] = useState(0)
+  const [clipsTotalPages, setClipsTotalPages] = useState(0)
+  const [clipsFirst, setClipsFirst] = useState(true)
+  const [clipsLast, setClipsLast] = useState(true)
   const [clipsLoading, setClipsLoading] = useState(true)
   const [clipsError, setClipsError] = useState<string | null>(null)
   const [addClipOpen, setAddClipOpen] = useState(false)
 
-  const loadClips = useCallback(async () => {
+  const loadClips = useCallback(async (pageNum: number) => {
     if (!lectureId?.trim()) return
     setClipsLoading(true)
     setClipsError(null)
     try {
-      const list = await getLectureClassLectures(lectureId)
-      setClips(list.map(mapLectureClipToRow))
+      const res = await getLectureClassLectures(lectureId, {
+        page: pageNum,
+        size: CLIP_PAGE_SIZE,
+      })
+      setClips(res.content.map(mapLectureClipToRow))
+      setClipPageIndex(res.page)
+      setClipsTotalElements(res.totalElements)
+      setClipsTotalPages(res.totalPages)
+      setClipsFirst(res.first)
+      setClipsLast(res.last)
     } catch (e) {
       setClipsError(e instanceof Error ? e.message : '영상 목록을 불러오지 못했습니다.')
     } finally {
@@ -37,8 +52,27 @@ export const TeacherLectureDetailPage = () => {
   }, [lectureId])
 
   useEffect(() => {
-    void loadClips()
+    void loadClips(0)
   }, [loadClips])
+
+  const clipsPageRangeStart =
+    clipsTotalElements === 0 ? 0 : clipPageIndex * CLIP_PAGE_SIZE + 1
+  const clipsPageRangeEnd = clipPageIndex * CLIP_PAGE_SIZE + clips.length
+  const clipsCurrentPageDisplay =
+    clipsTotalElements === 0 ? 0 : clipPageIndex + 1
+  const clipsShowPagination = clipsTotalPages > 1
+  const clipsCanGoPrev = !clipsFirst
+  const clipsCanGoNext = !clipsLast
+
+  const goClipsPrev = () => {
+    if (clipsFirst) return
+    void loadClips(clipPageIndex - 1)
+  }
+
+  const goClipsNext = () => {
+    if (clipsLast) return
+    void loadClips(clipPageIndex + 1)
+  }
 
   useEffect(() => {
     if (!lectureId?.trim()) {
@@ -114,15 +148,25 @@ export const TeacherLectureDetailPage = () => {
     <>
       <TeacherLectureDetail
         clips={clips}
+        clipsCanGoNext={clipsCanGoNext}
+        clipsCanGoPrev={clipsCanGoPrev}
+        clipsCurrentPageDisplay={clipsCurrentPageDisplay}
         clipsError={clipsError}
         clipsLoading={clipsLoading}
+        clipsPageRangeEnd={clipsPageRangeEnd}
+        clipsPageRangeStart={clipsPageRangeStart}
+        clipsShowPagination={clipsShowPagination}
+        clipsTotalElements={clipsTotalElements}
+        clipsTotalPages={clipsTotalPages}
         deletePending={deletePending}
         lecture={lecture}
         onAddClipClick={() => setAddClipOpen(true)}
         onBack={() => navigate('/')}
         onClipClick={(clip) => navigate(`/teacher/lecture/${lecture.id}/clip/${clip.id}`)}
+        onClipsNext={goClipsNext}
+        onClipsPrev={goClipsPrev}
         onDeleteClick={handleDelete}
-        onRetryClips={() => void loadClips()}
+        onRetryClips={() => void loadClips(clipPageIndex)}
       />
       <AddLectureClipModal
         lectureClassId={lectureClassIdNumber}
@@ -130,7 +174,7 @@ export const TeacherLectureDetailPage = () => {
         onClose={() => setAddClipOpen(false)}
         onSubmit={async (payload) => {
           await postLecture(payload)
-          await loadClips()
+          await loadClips(0)
         }}
       />
     </>
