@@ -6,6 +6,7 @@ import type {
   SignupRequestBody,
 } from '../../entities/auth/types'
 import { axiosInstance } from './axiosInstance'
+import { isApiSuccessCode } from './apiSuccess'
 
 const isRecord = (v: unknown): v is Record<string, unknown> =>
   typeof v === 'object' && v !== null
@@ -31,7 +32,7 @@ export const postLogin = async (body: LoginRequestBody): Promise<LoginResponseDa
       '/api/user/login',
       body,
     )
-    if (data.code !== 'SUCCESS' || data.data === null) {
+    if (!isApiSuccessCode(data.code) || data.data === null) {
       throw new Error(data.message || '로그인에 실패했습니다.')
     }
     return data.data
@@ -52,7 +53,7 @@ export const postLogin = async (body: LoginRequestBody): Promise<LoginResponseDa
 export const postSignup = async (body: SignupRequestBody): Promise<string> => {
   try {
     const { data } = await axiosInstance.post<ApiEnvelope<string>>('/api/user/signup', body)
-    if (data.code !== 'SUCCESS' || data.data === null) {
+    if (!isApiSuccessCode(data.code) || data.data === null) {
       throw new Error(data.message || '회원가입에 실패했습니다.')
     }
     return data.data
@@ -75,7 +76,7 @@ export const getCheckEmail = async (email: string): Promise<string> => {
     const { data } = await axiosInstance.get<ApiEnvelope<string>>('/api/user/check-email', {
       params: { email },
     })
-    if (data.code !== 'SUCCESS' || data.data === null) {
+    if (!isApiSuccessCode(data.code) || data.data === null) {
       throw new Error(data.message || '이메일 확인에 실패했습니다.')
     }
     return data.data

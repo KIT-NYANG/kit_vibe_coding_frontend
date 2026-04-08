@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import type { TeacherLectureCard } from '../entities/teacher/types'
 import { useAuthSession } from '../features/auth/useAuthSession'
 import { mapLectureClassToCard } from '../features/teacher/mapLectureClassToCard'
-import { deleteLectureClass, getLectureClassById } from '../shared/api/lectureApi'
+import { mapLectureClipToRow, type TeacherLectureClipRow } from '../features/teacher/mapLectureClipToRow'
+import { deleteLectureClass, getLectureClassById, getLectureClassLectures, postLecture } from '../shared/api/lectureApi'
+import { AddLectureClipModal } from '../widgets/teacher/AddLectureClipModal'
 import { TeacherLectureDetail } from '../widgets/teacher/TeacherLectureDetail'
 
 export const TeacherLectureDetailPage = () => {
@@ -15,6 +17,28 @@ export const TeacherLectureDetailPage = () => {
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [deletePending, setDeletePending] = useState(false)
+  const [clips, setClips] = useState<TeacherLectureClipRow[]>([])
+  const [clipsLoading, setClipsLoading] = useState(true)
+  const [clipsError, setClipsError] = useState<string | null>(null)
+  const [addClipOpen, setAddClipOpen] = useState(false)
+
+  const loadClips = useCallback(async () => {
+    if (!lectureId?.trim()) return
+    setClipsLoading(true)
+    setClipsError(null)
+    try {
+      const list = await getLectureClassLectures(lectureId)
+      setClips(list.map(mapLectureClipToRow))
+    } catch (e) {
+      setClipsError(e instanceof Error ? e.message : '영상 목록을 불러오지 못했습니다.')
+    } finally {
+      setClipsLoading(false)
+    }
+  }, [lectureId])
+
+  useEffect(() => {
+    void loadClips()
+  }, [loadClips])
 
   useEffect(() => {
     if (!lectureId?.trim()) {
@@ -84,12 +108,31 @@ export const TeacherLectureDetailPage = () => {
     }
   }
 
+  const lectureClassIdNumber = Number(lecture.id)
+
   return (
-    <TeacherLectureDetail
-      deletePending={deletePending}
-      lecture={lecture}
-      onBack={() => navigate('/')}
-      onDeleteClick={handleDelete}
-    />
+    <>
+      <TeacherLectureDetail
+        clips={clips}
+        clipsError={clipsError}
+        clipsLoading={clipsLoading}
+        deletePending={deletePending}
+        lecture={lecture}
+        onAddClipClick={() => setAddClipOpen(true)}
+        onBack={() => navigate('/')}
+        onClipClick={(clip) => navigate(`/teacher/lecture/${lecture.id}/clip/${clip.id}`)}
+        onDeleteClick={handleDelete}
+        onRetryClips={() => void loadClips()}
+      />
+      <AddLectureClipModal
+        lectureClassId={lectureClassIdNumber}
+        open={addClipOpen}
+        onClose={() => setAddClipOpen(false)}
+        onSubmit={async (payload) => {
+          await postLecture(payload)
+          await loadClips()
+        }}
+      />
+    </>
   )
 }

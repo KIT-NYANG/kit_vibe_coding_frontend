@@ -50,7 +50,7 @@ export const TeacherDashboard = ({
         <section className="min-w-0 flex-1 rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-6">
           <header className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-fg">
-              업로드한 강의{' '}
+              업로드한 강좌{' '}
               <span className="font-normal text-fg-subtle">
                 ({loading ? '…' : `${totalLectures}개`})
               </span>
