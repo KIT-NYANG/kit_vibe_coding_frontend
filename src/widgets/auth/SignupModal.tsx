@@ -1,5 +1,6 @@
 import { useId, useState, type SubmitEvent } from 'react'
 import type { SignupRequestBody, UserRole } from '../../entities/auth/types'
+import { useEmailCheck } from '../../features/auth/useEmailCheck'
 
 interface SignupModalProps {
   open: boolean
@@ -23,6 +24,8 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
   const [role, setRole] = useState<UserRole>('STUDENT')
   const [error, setError] = useState<string | null>(null)
   const [pending, setPending] = useState(false)
+  const { status: emailStatus, message: emailMessage, isEmailAvailable, isChecking, checkEmail, reset } =
+    useEmailCheck()
 
   if (!open) return null
 
@@ -31,13 +34,17 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
   const passwordsMatch = password.length > 0 && password === passwordConfirm
   const passwordsMismatch =
     passwordConfirm.length > 0 && password.length > 0 && password !== passwordConfirm
+  const passwordLengthValid = password.length >= 8 && password.length < 20
 
   const canSubmit =
     email.trim().length > 0 &&
     name.trim().length > 0 &&
     phone.trim().length > 0 &&
     ageValid &&
-    passwordsMatch
+    passwordLengthValid &&
+    passwordsMatch &&
+    isEmailAvailable &&
+    !isChecking
 
   const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -48,6 +55,7 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
       const payload: SignupRequestBody = {
         email: email.trim(),
         password,
+        passwordConfirm,
         name: name.trim(),
         age: ageNum,
         phone: phone.trim(),
@@ -101,8 +109,26 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
               required
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => checkEmail(email)}
+              onChange={(e) => {
+                setEmail(e.target.value)
+                reset()
+              }}
             />
+            {emailStatus !== 'idle' ? (
+              <p
+                className={`mt-1 text-xs ${
+                  emailStatus === 'available'
+                    ? 'text-emerald-700'
+                    : emailStatus === 'checking'
+                      ? 'text-fg-subtle'
+                      : 'text-red-600'
+                }`}
+                role={emailStatus === 'available' ? undefined : 'alert'}
+              >
+                {emailMessage}
+              </p>
+            ) : null}
           </div>
           <div>
             <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-password">
@@ -113,11 +139,18 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
               className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="signup-password"
               name="password"
+              minLength={8}
+              maxLength={19}
               required
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {!passwordLengthValid && password.length > 0 ? (
+              <p className="mt-1 text-xs text-red-600" role="alert">
+                비밀번호는 8자 이상 20자 미만이어야 합니다.
+              </p>
+            ) : null}
           </div>
           <div>
             <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-password2">
