@@ -1,8 +1,7 @@
 import { useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { TeacherLectureCard } from '../entities/teacher/types'
 import { useAuthSession } from '../features/auth/useAuthSession'
-import type { MainLayoutOutletContext } from '../layouts/mainLayoutContext'
 import { useMainHome } from '../features/main/useMainHome'
 import { useTeacherHome } from '../features/teacher/useTeacherHome'
 import { CategoryChipRow } from '../widgets/main/CategoryChipRow'
@@ -20,8 +19,6 @@ export const HomePage = () => {
 
 const StudentHomeContent = () => {
   const navigate = useNavigate()
-  const { openLoginModal } = useOutletContext<MainLayoutOutletContext>()
-  const { isLoggedIn } = useAuthSession()
   const {
     model,
     currentSlideLine,
@@ -64,13 +61,7 @@ const StudentHomeContent = () => {
         error={lecturesError}
         lectures={displayedLectures}
         loading={lecturesLoading}
-        onLectureClick={(lecture) => {
-          if (!isLoggedIn) {
-            openLoginModal()
-            return
-          }
-          navigate(`/lecture/${lecture.id}`)
-        }}
+        onLectureClick={(lecture) => navigate(`/lecture/${lecture.id}`)}
         onNext={goNextLectures}
         onPrev={goPrevLectures}
         onRetry={() => void refetchLectures()}

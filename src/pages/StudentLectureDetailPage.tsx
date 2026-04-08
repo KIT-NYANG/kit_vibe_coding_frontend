@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { TeacherLectureCard } from '../entities/teacher/types'
-import { useAuthSession } from '../features/auth/useAuthSession'
 import { mapLectureClassToCard } from '../features/teacher/mapLectureClassToCard'
 import { mapLectureClipToRow, type TeacherLectureClipRow } from '../features/teacher/mapLectureClipToRow'
 import { getLectureClassById, getLectureClassLectures } from '../shared/api/lectureApi'
@@ -14,7 +13,6 @@ export const StudentLectureDetailPage = () => {
   const { lectureClassId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn } = useAuthSession()
   const fromMyPage = Boolean(
     (location.state as StudentLectureLocationState | null)?.fromMyPage,
   )
@@ -106,10 +104,6 @@ export const StudentLectureDetailPage = () => {
       cancelled = true
     }
   }, [lectureClassId])
-
-  if (!isLoggedIn) {
-    return <Navigate replace to="/" />
-  }
 
   if (loading) {
     return (
