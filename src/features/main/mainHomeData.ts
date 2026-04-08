@@ -1,13 +1,10 @@
 import type { MainHomeModel } from '../../entities/main/types'
+import { brandData } from '../brand/brandData'
 
 const thumb = '/thumbnail-placeholder.svg'
 
 export const mainHomeData: MainHomeModel = {
-  brand: {
-    alt: 'NACOM 로고',
-    title: 'NACOM',
-    subtitle: '',
-  },
+  brand: brandData,
   heroSlides: [
     { id: 's1', line: 'AI 가 학습 경로를 추천해 주는' },
     { id: 's2', line: 'AI 가 코드 리뷰를 도와주는' },
