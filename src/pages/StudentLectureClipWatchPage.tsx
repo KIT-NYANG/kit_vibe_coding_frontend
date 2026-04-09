@@ -14,6 +14,14 @@ const formatDuration = (seconds: number): string => {
   return `${m}:${String(r).padStart(2, '0')}`
 }
 
+const parseSummaryKeywords = (raw: string | null | undefined): string[] => {
+  if (raw == null || !String(raw).trim()) return []
+  return String(raw)
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
 export const StudentLectureClipWatchPage = () => {
   const { lectureClassId, clipId } = useParams()
   const navigate = useNavigate()
@@ -98,6 +106,10 @@ export const StudentLectureClipWatchPage = () => {
     ? { fromMyPage: true }
     : undefined
 
+  const keywordList = parseSummaryKeywords(data.summaryKeywords)
+  const descriptionText = (data.description ?? '').trim()
+  const summaryTextTrimmed = (data.summaryText ?? '').trim()
+
   return (
     <div className="space-y-6">
       <button
@@ -117,9 +129,30 @@ export const StudentLectureClipWatchPage = () => {
             </p>
           </div>
         </div>
-        <p className="mb-6 text-sm leading-relaxed text-fg">
-          {data.description.trim() ? data.description : '설명이 없습니다.'}
+
+        {keywordList.length > 0 ? (
+          <div className="mb-4 flex flex-wrap gap-2">
+            {keywordList.map((kw) => (
+              <span
+                key={kw}
+                className="inline-flex rounded-full border border-palette-primary/25 bg-surface px-2.5 py-1 text-xs font-medium text-fg ring-1 ring-palette-primary/10"
+              >
+                {kw}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        <p className="mb-4 text-sm leading-relaxed text-fg">
+          {descriptionText ? descriptionText : '설명이 없습니다.'}
         </p>
+
+        {summaryTextTrimmed ? (
+          <div className="mb-6 rounded-xl border border-palette-primary/15 bg-surface/80 px-4 py-3 ring-1 ring-palette-primary/10">
+            <p className="mb-1 text-xs font-semibold text-fg-subtle">요약</p>
+            <p className="text-sm leading-relaxed text-fg">{summaryTextTrimmed}</p>
+          </div>
+        ) : null}
 
         <LectureVideoPlayer src={videoSrc} title={data.title} />
       </section>

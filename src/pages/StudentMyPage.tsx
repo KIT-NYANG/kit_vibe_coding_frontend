@@ -1,6 +1,7 @@
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuthSession } from '../features/auth/useAuthSession'
 import { useStudentMyPage } from '../features/student/useStudentMyPage'
+import { LECTURE_CATEGORY_OPTIONS } from '../shared/lib/lectureCategories'
 import { CategoryPreviewGrid } from '../widgets/main/CategoryPreviewGrid'
 
 export const StudentMyPage = () => {
@@ -59,13 +60,18 @@ export const StudentMyPage = () => {
         <div className="mt-3 flex flex-wrap items-end gap-2">
           <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-xs text-fg-subtle">
             카테고리
-            <input
-              type="text"
+            <select
               value={filterCategoryDraft}
               onChange={(e) => setFilterCategoryDraft(e.target.value)}
-              placeholder="예: 백엔드"
-              className="rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle/70 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
-            />
+              className="rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
+            >
+              <option value="">전체</option>
+              {LECTURE_CATEGORY_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </label>
           <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-xs text-fg-subtle">
             검색어

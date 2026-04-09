@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type SubmitEvent } from 'react'
 import type { TeacherLectureCreatePayload } from '../../entities/teacher/types'
+import { LECTURE_CATEGORY_OPTIONS } from '../../shared/lib/lectureCategories'
 
 interface CreateLectureModalProps {
   open: boolean
@@ -118,16 +119,20 @@ export const CreateLectureModal = ({ open, onClose, onSubmit }: CreateLectureMod
             <label className="block text-sm font-medium text-fg-subtle" htmlFor="lecture-category">
               카테고리 <span className="text-red-600">*</span>
             </label>
-            <input
-              autoComplete="off"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+            <select
+              className="mt-1 w-full rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="lecture-category"
               name="category"
-              placeholder="예: 백엔드"
-              type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-            />
+            >
+              <option value="">선택해 주세요</option>
+              {LECTURE_CATEGORY_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

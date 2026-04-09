@@ -75,7 +75,7 @@ export const useMainHome = (): UseMainHomeResult => {
         const res = await getLectureClasses({
           page: pageNum,
           size: LECTURE_LIST_PAGE_SIZE,
-          category: selectedCategoryLabel.trim() || undefined,
+          category: selectedCategoryId.trim() || undefined,
         })
         setLecturePageIndex(res.page)
         setDisplayedLectures(
@@ -98,7 +98,7 @@ export const useMainHome = (): UseMainHomeResult => {
         setLecturesLoading(false)
       }
     },
-    [selectedCategoryId, selectedCategoryLabel],
+    [selectedCategoryId],
   )
 
   useEffect(() => {
