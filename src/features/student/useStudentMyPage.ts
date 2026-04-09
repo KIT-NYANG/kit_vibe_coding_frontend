@@ -1,23 +1,20 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { TeacherHomeModel, TeacherLectureCard, TeacherLectureCreatePayload } from '../../entities/teacher/types'
-import { getLectureClasses, postLectureClass } from '../../shared/api/lectureApi'
-import { mapLectureClassToCard } from './mapLectureClassToCard'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import type { CategoryLecture } from '../../entities/main/types'
+import { getMyLectureList } from '../../shared/api/lectureApi'
+import { mapMyLectureItemToCategoryLecture } from './mapMyLectureItemToCategoryLecture'
 
 const PAGE_SIZE = 10
 
-export interface UseTeacherHomeResult {
-  model: TeacherHomeModel
-  displayedLectures: TeacherHomeModel['uploadedLectures']
+export interface UseStudentMyPageResult {
+  displayedLectures: CategoryLecture[]
   totalLectures: number
   showArrows: boolean
   canGoPrev: boolean
   canGoNext: boolean
   goPrev: () => void
   goNext: () => void
-  /** 하단 페이지 안내 (1-based, 전체 0이면 0) */
   pageRangeStart: number
   pageRangeEnd: number
-  /** 1-based 표시용; 전체 0건이면 0 */
   currentPage: number
   totalPages: number
   filterCategoryDraft: string
@@ -25,14 +22,13 @@ export interface UseTeacherHomeResult {
   setFilterCategoryDraft: (value: string) => void
   setFilterKeywordDraft: (value: string) => void
   applyFilters: () => void
-  addLecture: (payload: TeacherLectureCreatePayload) => Promise<void>
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
 }
 
-export const useTeacherHome = (): UseTeacherHomeResult => {
-  const [displayedLectures, setDisplayedLectures] = useState<TeacherLectureCard[]>([])
+export const useStudentMyPage = (): UseStudentMyPageResult => {
+  const [displayedLectures, setDisplayedLectures] = useState<CategoryLecture[]>([])
   const [pageIndex, setPageIndex] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
@@ -58,20 +54,25 @@ export const useTeacherHome = (): UseTeacherHomeResult => {
     setLoading(true)
     setError(null)
     try {
-      const res = await getLectureClasses({
+      const res = await getMyLectureList({
         page: nextPage,
         size: PAGE_SIZE,
         category: category.trim() || undefined,
         keyword: keyword.trim() || undefined,
       })
       setPageIndex(res.page)
-      setDisplayedLectures(res.content.map(mapLectureClassToCard))
+      setDisplayedLectures(res.content.map(mapMyLectureItemToCategoryLecture))
       setTotalElements(res.totalElements)
       setTotalPages(res.totalPages)
       setFirst(res.first)
       setLast(res.last)
     } catch (e) {
-      setError(e instanceof Error ? e.message : '강의 목록을 불러오지 못했습니다.')
+      setDisplayedLectures([])
+      setTotalElements(0)
+      setTotalPages(0)
+      setFirst(true)
+      setLast(true)
+      setError(e instanceof Error ? e.message : '내 강좌 목록을 불러오지 못했습니다.')
     } finally {
       setLoading(false)
     }
@@ -80,11 +81,6 @@ export const useTeacherHome = (): UseTeacherHomeResult => {
   useEffect(() => {
     void fetchPage(0)
   }, [categoryFilter, keywordFilter, fetchPage])
-
-  const model = useMemo<TeacherHomeModel>(
-    () => ({ uploadedLectures: displayedLectures }),
-    [displayedLectures],
-  )
 
   const totalLectures = totalElements
   const showArrows = totalPages > 1
@@ -110,16 +106,7 @@ export const useTeacherHome = (): UseTeacherHomeResult => {
     await fetchPage(pageIndex)
   }, [fetchPage, pageIndex])
 
-  const addLecture = useCallback(
-    async (payload: TeacherLectureCreatePayload) => {
-      await postLectureClass(payload)
-      await fetchPage(0)
-    },
-    [fetchPage],
-  )
-
   return {
-    model,
     displayedLectures,
     totalLectures,
     showArrows,
@@ -136,7 +123,6 @@ export const useTeacherHome = (): UseTeacherHomeResult => {
     setFilterCategoryDraft,
     setFilterKeywordDraft,
     applyFilters,
-    addLecture,
     loading,
     error,
     refetch,

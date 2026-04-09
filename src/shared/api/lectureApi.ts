@@ -1,9 +1,15 @@
 import axios from 'axios'
 import type { ApiEnvelope } from '../../entities/auth/types'
 import type {
+  GetLectureClassesParams,
+  GetLectureClassLecturesParams,
+  GetMyLectureListParams,
   LectureClassDto,
+  LectureClassPageDto,
   LectureClipDto,
+  LectureClipPageDto,
   LecturePlaybackDto,
+  MyLectureListPageDto,
   PostLecturePayload,
 } from '../../entities/lecture/types'
 import type { TeacherLectureCreatePayload } from '../../entities/teacher/types'
@@ -27,11 +33,22 @@ const getErrorMessage = (error: unknown): string => {
 
 /**
  * GET /api/lecture-class
- * 로그인한 강사 본인이 업로드한 강좌 목록입니다.
+ * 로그인한 강사 본인이 업로드한 강좌 목록(페이지네이션)입니다.
  */
-export const getLectureClasses = async (): Promise<LectureClassDto[]> => {
+export const getLectureClasses = async (
+  params: GetLectureClassesParams = {},
+): Promise<LectureClassPageDto> => {
+  const search = new URLSearchParams()
+  if (params.page !== undefined) search.set('page', String(params.page))
+  if (params.size !== undefined) search.set('size', String(params.size))
+  const cat = params.category?.trim()
+  const kw = params.keyword?.trim()
+  if (cat) search.set('category', cat)
+  if (kw) search.set('keyword', kw)
+  const qs = search.toString()
+  const url = qs ? `/api/lecture-class?${qs}` : '/api/lecture-class'
   try {
-    const { data } = await axiosInstance.get<ApiEnvelope<LectureClassDto[]>>('/api/lecture-class')
+    const { data } = await axiosInstance.get<ApiEnvelope<LectureClassPageDto>>(url)
     if (!isApiSuccessCode(data.code) || data.data === null) {
       throw new Error(data.message || '강좌 목록을 불러오지 못했습니다.')
     }
@@ -44,6 +61,39 @@ export const getLectureClasses = async (): Promise<LectureClassDto[]> => {
       throw error
     }
     throw new Error('강좌 목록을 불러오지 못했습니다.')
+  }
+}
+
+/**
+ * GET /api/lecture-list/my
+ * 학생 본인의 강좌 목록(페이지네이션). category·keyword는 선택.
+ */
+export const getMyLectureList = async (
+  params: GetMyLectureListParams = {},
+): Promise<MyLectureListPageDto> => {
+  const search = new URLSearchParams()
+  if (params.page !== undefined) search.set('page', String(params.page))
+  if (params.size !== undefined) search.set('size', String(params.size))
+  const cat = params.category?.trim()
+  const kw = params.keyword?.trim()
+  if (cat) search.set('category', cat)
+  if (kw) search.set('keyword', kw)
+  const qs = search.toString()
+  const url = qs ? `/api/lecture-list/my?${qs}` : '/api/lecture-list/my'
+  try {
+    const { data } = await axiosInstance.get<ApiEnvelope<MyLectureListPageDto>>(url)
+    if (!isApiSuccessCode(data.code) || data.data === null) {
+      throw new Error(data.message || '내 강좌 목록을 불러오지 못했습니다.')
+    }
+    return data.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('내 강좌 목록을 불러오지 못했습니다.')
   }
 }
 
@@ -77,17 +127,23 @@ export const getLectureClassById = async (
 
 /**
  * GET /api/lecture-class/:lectureClassId/lectures
- * 강좌에 등록된 개별 영상(회차) 목록
+ * 강좌에 등록된 개별 영상(회차) 목록(페이지네이션)
  */
 export const getLectureClassLectures = async (
   lectureClassId: string | number,
-): Promise<LectureClipDto[]> => {
+  params: GetLectureClassLecturesParams = {},
+): Promise<LectureClipPageDto> => {
   const id =
     typeof lectureClassId === 'string' ? encodeURIComponent(lectureClassId) : String(lectureClassId)
+  const search = new URLSearchParams()
+  if (params.page !== undefined) search.set('page', String(params.page))
+  if (params.size !== undefined) search.set('size', String(params.size))
+  const qs = search.toString()
+  const url = qs
+    ? `/api/lecture-class/${id}/lectures?${qs}`
+    : `/api/lecture-class/${id}/lectures`
   try {
-    const { data } = await axiosInstance.get<ApiEnvelope<LectureClipDto[]>>(
-      `/api/lecture-class/${id}/lectures`,
-    )
+    const { data } = await axiosInstance.get<ApiEnvelope<LectureClipPageDto>>(url)
     if (!isApiSuccessCode(data.code) || data.data === null) {
       throw new Error(data.message || '영상 목록을 불러오지 못했습니다.')
     }
@@ -123,6 +179,51 @@ export const getLecturePlayback = async (lectureId: string | number): Promise<Le
       throw error
     }
     throw new Error('영상 정보를 불러오지 못했습니다.')
+  }
+}
+
+const defaultDeleteLectureSuccessMessage = '영상이 삭제되었습니다.'
+
+/**
+ * DELETE /api/lectures/:lectureId
+ * 성공 시 204 No Content
+ */
+export const deleteLecture = async (lectureId: string | number): Promise<string> => {
+  const id = typeof lectureId === 'string' ? encodeURIComponent(lectureId) : String(lectureId)
+  try {
+    const res = await axiosInstance.delete<unknown>(`/api/lectures/${id}`)
+    const { status, data } = res
+
+    if (status === 204) {
+      return defaultDeleteLectureSuccessMessage
+    }
+
+    if (data === '' || data === null || data === undefined) {
+      if (status >= 200 && status < 300) {
+        return defaultDeleteLectureSuccessMessage
+      }
+      throw new Error('영상을 삭제하지 못했습니다.')
+    }
+
+    if (isRecord(data) && typeof data.code === 'string') {
+      const envelope = data as unknown as ApiEnvelope<string>
+      if (!isApiSuccessCode(envelope.code) || envelope.data === null) {
+        throw new Error(
+          typeof envelope.message === 'string' ? envelope.message : '영상을 삭제하지 못했습니다.',
+        )
+      }
+      return envelope.data
+    }
+
+    throw new Error('영상을 삭제하지 못했습니다.')
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('영상을 삭제하지 못했습니다.')
   }
 }
 

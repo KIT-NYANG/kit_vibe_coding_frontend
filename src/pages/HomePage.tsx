@@ -18,6 +18,7 @@ export const HomePage = () => {
 }
 
 const StudentHomeContent = () => {
+  const navigate = useNavigate()
   const {
     model,
     currentSlideLine,
@@ -33,6 +34,9 @@ const StudentHomeContent = () => {
     goPrevLectures,
     goNextLectures,
     selectedCategoryLabel,
+    lecturesLoading,
+    lecturesError,
+    refetchLectures,
   } = useMainHome()
 
   const slideLabel = `히어로 배너 ${model.heroSlides.length}장 중 표시`
@@ -54,9 +58,13 @@ const StudentHomeContent = () => {
         canGoNext={canGoNextLectures}
         canGoPrev={canGoPrevLectures}
         categoryLabel={selectedCategoryLabel}
+        error={lecturesError}
         lectures={displayedLectures}
+        loading={lecturesLoading}
+        onLectureClick={(lecture) => navigate(`/lecture/${lecture.id}`)}
         onNext={goNextLectures}
         onPrev={goPrevLectures}
+        onRetry={() => void refetchLectures()}
         showArrows={showLectureArrows}
         totalInCategory={totalLecturesInCategory}
       />
@@ -83,6 +91,11 @@ const TeacherHomeContent = () => {
     loading,
     error,
     refetch,
+    filterCategoryDraft,
+    filterKeywordDraft,
+    setFilterCategoryDraft,
+    setFilterKeywordDraft,
+    applyFilters,
   } = useTeacherHome()
 
   const goToLectureDetail = (lecture: TeacherLectureCard) => {
@@ -96,6 +109,11 @@ const TeacherHomeContent = () => {
         canGoPrev={canGoPrev}
         currentPage={currentPage}
         error={error}
+        filterCategoryDraft={filterCategoryDraft}
+        filterKeywordDraft={filterKeywordDraft}
+        onApplyFilters={applyFilters}
+        onFilterCategoryDraftChange={setFilterCategoryDraft}
+        onFilterKeywordDraftChange={setFilterKeywordDraft}
         lectures={displayedLectures}
         loading={loading}
         onLectureClick={goToLectureDetail}

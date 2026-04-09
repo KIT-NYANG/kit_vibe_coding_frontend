@@ -19,6 +19,8 @@ export interface TeacherLectureCard {
   category: string
   description: string
   createdAt: string
+  /** 강사명 (상세 등에서 표시) */
+  teacherName?: string
 }
 
 export interface TeacherHomeModel {

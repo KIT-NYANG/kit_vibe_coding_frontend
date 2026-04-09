@@ -19,6 +19,11 @@ interface TeacherDashboardProps {
   currentPage: number
   totalPages: number
   onLectureClick: (lecture: TeacherLectureCard) => void
+  filterCategoryDraft: string
+  filterKeywordDraft: string
+  onFilterCategoryDraftChange: (value: string) => void
+  onFilterKeywordDraftChange: (value: string) => void
+  onApplyFilters: () => void
 }
 
 const iconBtnClass =
@@ -41,6 +46,11 @@ export const TeacherDashboard = ({
   currentPage,
   totalPages,
   onLectureClick,
+  filterCategoryDraft,
+  filterKeywordDraft,
+  onFilterCategoryDraftChange,
+  onFilterKeywordDraftChange,
+  onApplyFilters,
 }: TeacherDashboardProps) => {
   const paddedLectures = Array.from({ length: 10 }, (_, idx) => lectures[idx] ?? null)
 
@@ -56,6 +66,36 @@ export const TeacherDashboard = ({
               </span>
             </h2>
           </header>
+
+          <div className="mt-3 flex flex-wrap items-end gap-2">
+            <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-xs text-fg-subtle">
+              카테고리
+              <input
+                type="text"
+                value={filterCategoryDraft}
+                onChange={(e) => onFilterCategoryDraftChange(e.target.value)}
+                placeholder="예: 백엔드"
+                className="rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle/70 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
+              />
+            </label>
+            <label className="flex min-w-[140px] flex-1 flex-col gap-1 text-xs text-fg-subtle">
+              검색어
+              <input
+                type="text"
+                value={filterKeywordDraft}
+                onChange={(e) => onFilterKeywordDraftChange(e.target.value)}
+                placeholder="제목 등"
+                className="rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg placeholder:text-fg-subtle/70 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
+              />
+            </label>
+            <button
+              type="button"
+              className="rounded-lg bg-palette-primary px-4 py-2 text-xs font-medium text-palette-white transition hover:bg-palette-primary/90 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
+              onClick={onApplyFilters}
+            >
+              검색
+            </button>
+          </div>
 
           {error ? (
             <div

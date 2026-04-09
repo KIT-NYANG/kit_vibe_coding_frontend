@@ -1,11 +1,11 @@
-import { Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { LecturePlaybackDto } from '../entities/lecture/types'
 import { useAuthSession } from '../features/auth/useAuthSession'
-import { deleteLecture, getLecturePlayback } from '../shared/api/lectureApi'
+import { getLecturePlayback } from '../shared/api/lectureApi'
 import { resolveApiAssetUrl } from '../shared/lib/resolveApiAssetUrl'
 import { LectureVideoPlayer } from '../widgets/teacher/LectureVideoPlayer'
+import type { StudentLectureLocationState } from './studentLectureLocationState'
 
 const formatDuration = (seconds: number): string => {
   const s = Math.max(0, Math.floor(seconds))
@@ -14,15 +14,18 @@ const formatDuration = (seconds: number): string => {
   return `${m}:${String(r).padStart(2, '0')}`
 }
 
-export const TeacherLectureClipWatchPage = () => {
+export const StudentLectureClipWatchPage = () => {
   const { lectureClassId, clipId } = useParams()
   const navigate = useNavigate()
-  const { user, isLoggedIn } = useAuthSession()
+  const location = useLocation()
+  const { isLoggedIn } = useAuthSession()
+  const fromMyPage = Boolean(
+    (location.state as StudentLectureLocationState | null)?.fromMyPage,
+  )
 
   const [data, setData] = useState<LecturePlaybackDto | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
-  const [deletePending, setDeletePending] = useState(false)
 
   useEffect(() => {
     if (!clipId?.trim()) {
@@ -52,7 +55,7 @@ export const TeacherLectureClipWatchPage = () => {
     }
   }, [clipId])
 
-  if (!isLoggedIn || user?.role !== 'TEACHER') {
+  if (!isLoggedIn) {
     return <Navigate replace to="/" />
   }
 
@@ -71,37 +74,36 @@ export const TeacherLectureClipWatchPage = () => {
         <button
           type="button"
           className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90"
-          onClick={() => navigate(lectureClassId ? `/teacher/lecture/${lectureClassId}` : '/')}
+          onClick={() =>
+            navigate(
+              lectureClassId
+                ? `/lecture/${lectureClassId}`
+                : '/',
+              {
+                replace: true,
+                state: fromMyPage ? ({ fromMyPage: true } satisfies StudentLectureLocationState) : undefined,
+              },
+            )
+          }
         >
-          {lectureClassId ? '강좌로 돌아가기' : '홈으로'}
+          {lectureClassId ? '강좌 상세로' : '홈으로'}
         </button>
       </div>
     )
   }
 
   const videoSrc = resolveApiAssetUrl(data.videoUrl)
-  const backPath = lectureClassId ? `/teacher/lecture/${lectureClassId}` : '/'
-
-  const handleDelete = async () => {
-    if (!clipId?.trim()) return
-    if (!window.confirm(`「${data.title}」 영상을 삭제할까요?`)) return
-    setDeletePending(true)
-    try {
-      await deleteLecture(clipId)
-      navigate(backPath)
-    } catch (e) {
-      window.alert(e instanceof Error ? e.message : '삭제에 실패했습니다.')
-    } finally {
-      setDeletePending(false)
-    }
-  }
+  const lectureDetailPath = lectureClassId ? `/lecture/${lectureClassId}` : '/'
+  const backState: StudentLectureLocationState | undefined = fromMyPage
+    ? { fromMyPage: true }
+    : undefined
 
   return (
     <div className="space-y-6">
       <button
         type="button"
         className="text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
-        onClick={() => navigate(backPath)}
+        onClick={() => navigate(lectureDetailPath, { state: backState })}
       >
         ← 강좌 상세
       </button>
@@ -114,16 +116,6 @@ export const TeacherLectureClipWatchPage = () => {
               재생 시간 {formatDuration(data.durationSeconds)}
             </p>
           </div>
-          <button
-            type="button"
-            aria-busy={deletePending}
-            disabled={deletePending}
-            className="inline-flex shrink-0 items-center justify-center gap-1.5 self-start rounded-lg border border-red-200 bg-surface px-3 py-2 text-sm font-medium text-red-700 shadow-sm transition hover:bg-red-50 focus-visible:outline focus-visible:ring-2 focus-visible:ring-red-300 disabled:cursor-not-allowed disabled:opacity-50 sm:self-auto"
-            onClick={() => void handleDelete()}
-          >
-            <Trash2 aria-hidden className="h-4 w-4 shrink-0" strokeWidth={2} />
-            삭제
-          </button>
         </div>
         <p className="mb-6 text-sm leading-relaxed text-fg">
           {data.description.trim() ? data.description : '설명이 없습니다.'}

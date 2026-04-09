@@ -1,11 +1,13 @@
 import type { LectureClipDto } from '../../entities/lecture/types'
-import { resolveApiAssetUrl } from '../../shared/lib/resolveApiAssetUrl'
+import { resolveThumbnailSrc } from '../../shared/lib/resolveApiAssetUrl'
 
 export interface TeacherLectureClipRow {
   id: number
   title: string
+  description: string
   thumbnailSrc: string
   durationLabel: string
+  sttStatus?: string
 }
 
 const formatDuration = (seconds: number): string => {
@@ -19,7 +21,9 @@ export function mapLectureClipToRow(dto: LectureClipDto): TeacherLectureClipRow 
   return {
     id: dto.lectureId,
     title: dto.title,
-    thumbnailSrc: resolveApiAssetUrl(dto.thumbnailUrl),
+    description: (dto.description ?? '').trim(),
+    thumbnailSrc: resolveThumbnailSrc(dto.thumbnailUrl),
     durationLabel: formatDuration(dto.durationSeconds),
+    sttStatus: dto.sttStatus,
   }
 }
