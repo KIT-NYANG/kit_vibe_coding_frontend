@@ -21,11 +21,24 @@ export interface LectureClassPageDto {
   last: boolean
 }
 
+/** category: API 고정값 BACKEND | FRONTEND | AI | INFRA | DATABASE | DEVOPS | CS */
 export interface GetLectureClassesParams {
   page?: number
   size?: number
   category?: string
   keyword?: string
+}
+
+/** GET /api/lecture-class/:id/check — 학생 수강 여부 */
+export interface LectureClassEnrollmentCheckDto {
+  isEnrolled: boolean
+  /** 수강 중일 때 — DELETE /api/lecture-list/{lectureListId} (204) */
+  lectureListId?: number | null
+}
+
+/** POST /api/lecture-list — 학생 수강 신청 */
+export interface PostLectureListEnrollmentBody {
+  lectureClassId: number
 }
 
 /** GET /api/lecture-class/:id/lectures — 강좌에 속한 개별 영상(회차) */
@@ -81,6 +94,7 @@ export interface MyLectureListPageDto {
   last: boolean
 }
 
+/** category: BACKEND, FRONTEND, … 고정 코드 */
 export interface GetMyLectureListParams {
   page?: number
   size?: number
@@ -106,6 +120,15 @@ export interface LecturePlaybackDto {
   description: string
   durationSeconds: number
   videoUrl: string
-  thumbnailUrl: string
+  thumbnailUrl?: string | null
   createdAt: string
+  sttStatus?: string | null
+  transcriptFullText?: string | null
+  transcriptLanguage?: string | null
+  /** 요약 본문 — 시청 페이지 설명 하단에 표시 */
+  summaryText?: string | null
+  /** 쉼표로 구분된 키워드 — 제목·설명 사이 칩으로 표시 */
+  summaryKeywords?: string | null
+  sttErrorMessage?: string | null
+  sttCompletedAt?: string | null
 }

@@ -2,6 +2,7 @@ import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react'
 import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
 import { formatSttStatusBadge } from '../../features/teacher/sttStatusLabel'
+import { getLectureCategoryLabel } from '../../shared/lib/lectureCategories'
 
 const formatUploadDate = (iso: string): string => {
   try {
@@ -109,7 +110,7 @@ export const TeacherLectureDetail = ({
           <p className="text-sm leading-relaxed text-fg">
             <span className="font-semibold text-fg">카테고리</span>
             <span className="text-fg-subtle">: </span>
-            {lecture.category}
+            {getLectureCategoryLabel(lecture.category)}
           </p>
           <p className="text-sm leading-relaxed text-fg">
             <span className="font-semibold text-fg">설명</span>

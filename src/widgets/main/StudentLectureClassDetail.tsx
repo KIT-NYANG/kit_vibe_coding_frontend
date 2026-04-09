@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
+import { getLectureCategoryLabel } from '../../shared/lib/lectureCategories'
 import { THUMBNAIL_PLACEHOLDER } from '../../shared/lib/resolveApiAssetUrl'
 
 const formatUploadDate = (iso: string): string => {
@@ -36,6 +37,17 @@ interface StudentLectureClassDetailProps {
   onClipsNext: () => void
   /** 마이페이지 경로로 들어온 경우에만 전달 — 영상 클릭 시 시청 이동 */
   onClipWatch?: (clip: TeacherLectureClipRow) => void
+  /** 학생·비로그인 수강 CTA (강사 등에서는 미전달) */
+  enrollmentCta?: {
+    phase: 'loading' | 'guest' | 'enroll' | 'enrolled'
+    onClick: () => void
+    /** 수강 신청 요청 중 (phase가 enroll일 때) */
+    submitting?: boolean
+    onCancelEnrollment?: () => void
+    cancelSubmitting?: boolean
+  }
+  /** 수강 신청 실패 메시지 */
+  enrollmentError?: string | null
 }
 
 export const StudentLectureClassDetail = ({
@@ -57,6 +69,8 @@ export const StudentLectureClassDetail = ({
   onClipsPrev,
   onClipsNext,
   onClipWatch,
+  enrollmentCta,
+  enrollmentError,
 }: StudentLectureClassDetailProps) => {
   const iconBtnClass =
     'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-transparent text-palette-primary transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:pointer-events-none disabled:opacity-40'
@@ -91,6 +105,55 @@ export const StudentLectureClassDetail = ({
           </div>
         </div>
 
+        {enrollmentCta ? (
+          <div className="mx-auto mt-6 max-w-2xl space-y-2">
+            <div className="flex flex-wrap items-center justify-center gap-3">
+              {enrollmentCta.phase === 'enrolled' ? (
+                <>
+                  <button
+                    type="button"
+                    disabled
+                    className="min-w-[10rem] rounded-xl bg-palette-accent/30 px-6 py-3 text-sm font-semibold text-fg ring-1 ring-palette-primary/20"
+                  >
+                    수강중
+                  </button>
+                  {enrollmentCta.onCancelEnrollment ? (
+                    <button
+                      type="button"
+                      disabled={enrollmentCta.cancelSubmitting}
+                      className="min-w-[10rem] rounded-xl border border-palette-primary/35 bg-surface px-6 py-3 text-sm font-semibold text-fg transition hover:bg-palette-accent/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      onClick={enrollmentCta.onCancelEnrollment}
+                    >
+                      {enrollmentCta.cancelSubmitting ? '처리 중…' : '수강취소'}
+                    </button>
+                  ) : null}
+                </>
+              ) : (
+                <button
+                  type="button"
+                  disabled={
+                    enrollmentCta.phase === 'loading' ||
+                    Boolean(enrollmentCta.phase === 'enroll' && enrollmentCta.submitting)
+                  }
+                  className="min-w-[10rem] rounded-xl bg-palette-primary px-6 py-3 text-sm font-semibold text-palette-white transition hover:bg-palette-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:cursor-not-allowed disabled:opacity-60"
+                  onClick={enrollmentCta.onClick}
+                >
+                  {enrollmentCta.phase === 'loading'
+                    ? '확인 중…'
+                    : enrollmentCta.phase === 'enroll' && enrollmentCta.submitting
+                      ? '신청 중…'
+                      : '수강하기'}
+                </button>
+              )}
+            </div>
+            {enrollmentError ? (
+              <p className="text-center text-xs text-red-600" role="alert">
+                {enrollmentError}
+              </p>
+            ) : null}
+          </div>
+        ) : null}
+
         <div className="mx-auto mt-8 max-w-2xl space-y-3 rounded-xl bg-surface px-5 py-5 ring-1 ring-palette-primary/12 sm:px-6">
           {lecture.teacherName ? (
             <p className="text-sm leading-relaxed text-fg">
@@ -102,7 +165,7 @@ export const StudentLectureClassDetail = ({
           <p className="text-sm leading-relaxed text-fg">
             <span className="font-semibold text-fg">카테고리</span>
             <span className="text-fg-subtle">: </span>
-            {lecture.category}
+            {getLectureCategoryLabel(lecture.category)}
           </p>
           <p className="text-sm leading-relaxed text-fg">
             <span className="font-semibold text-fg">설명</span>

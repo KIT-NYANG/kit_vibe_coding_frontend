@@ -126,7 +126,7 @@ export const TeacherLectureClipWatchPage = () => {
           </button>
         </div>
         <p className="mb-6 text-sm leading-relaxed text-fg">
-          {data.description.trim() ? data.description : '설명이 없습니다.'}
+          {(data.description ?? '').trim() ? data.description : '설명이 없습니다.'}
         </p>
 
         <LectureVideoPlayer src={videoSrc} title={data.title} />

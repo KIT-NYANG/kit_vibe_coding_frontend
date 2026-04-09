@@ -5,7 +5,9 @@ import type {
   GetLectureClassLecturesParams,
   GetMyLectureListParams,
   LectureClassDto,
+  LectureClassEnrollmentCheckDto,
   LectureClassPageDto,
+  PostLectureListEnrollmentBody,
   LectureClipDto,
   LectureClipPageDto,
   LecturePlaybackDto,
@@ -34,6 +36,7 @@ const getErrorMessage = (error: unknown): string => {
 /**
  * GET /api/lecture-class
  * 로그인한 강사 본인이 업로드한 강좌 목록(페이지네이션)입니다.
+ * `category` 쿼리는 고정 코드만 허용: BACKEND, FRONTEND, AI, INFRA, DATABASE, DEVOPS, CS
  */
 export const getLectureClasses = async (
   params: GetLectureClassesParams = {},
@@ -67,6 +70,7 @@ export const getLectureClasses = async (
 /**
  * GET /api/lecture-list/my
  * 학생 본인의 강좌 목록(페이지네이션). category·keyword는 선택.
+ * category는 BACKEND, FRONTEND, … 고정 코드.
  */
 export const getMyLectureList = async (
   params: GetMyLectureListParams = {},
@@ -122,6 +126,99 @@ export const getLectureClassById = async (
       throw error
     }
     throw new Error('강좌 정보를 불러오지 못했습니다.')
+  }
+}
+
+/**
+ * GET /api/lecture-class/:lectureClassId/check
+ * 학생 로그인 시 수강 여부. (Authorization Bearer 필요)
+ */
+export const checkLectureClassEnrollment = async (
+  lectureClassId: string | number,
+): Promise<LectureClassEnrollmentCheckDto> => {
+  const id =
+    typeof lectureClassId === 'string' ? encodeURIComponent(lectureClassId) : String(lectureClassId)
+  try {
+    const { data } = await axiosInstance.get<ApiEnvelope<LectureClassEnrollmentCheckDto>>(
+      `/api/lecture-class/${id}/check`,
+    )
+    if (!isApiSuccessCode(data.code) || data.data === null) {
+      throw new Error(data.message || '수강 여부를 확인하지 못했습니다.')
+    }
+    return data.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('수강 여부를 확인하지 못했습니다.')
+  }
+}
+
+/**
+ * POST /api/lecture-list
+ * 학생 수강 신청. 응답 code는 CREATED 등.
+ */
+export const postLectureListEnrollment = async (
+  body: PostLectureListEnrollmentBody,
+): Promise<void> => {
+  try {
+    const { data } = await axiosInstance.post<ApiEnvelope<string | null>>(
+      '/api/lecture-list',
+      body,
+    )
+    if (!isApiSuccessCode(data.code)) {
+      throw new Error(data.message || '수강 신청에 실패했습니다.')
+    }
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('수강 신청에 실패했습니다.')
+  }
+}
+
+/**
+ * DELETE /api/lecture-list/:lectureListId
+ * 학생 수강 취소. 204 No Content.
+ */
+export const deleteLectureListEnrollment = async (
+  lectureListId: string | number,
+): Promise<void> => {
+  const id =
+    typeof lectureListId === 'string' ? encodeURIComponent(lectureListId) : String(lectureListId)
+  try {
+    await axiosInstance.delete(`/api/lecture-list/${id}`)
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('수강 취소에 실패했습니다.')
+  }
+}
+
+/**
+ * 내 강좌 목록에서 lectureClassId에 해당하는 lectureListId 조회 (check 응답에 id가 없을 때)
+ */
+export const findLectureListIdForClass = async (
+  lectureClassId: number,
+): Promise<number | null> => {
+  let page = 0
+  const size = 50
+  for (;;) {
+    const res = await getMyLectureList({ page, size })
+    const hit = res.content.find((c) => c.lectureClassId === lectureClassId)
+    if (hit) return hit.lectureListId
+    if (res.last) return null
+    page += 1
   }
 }
 

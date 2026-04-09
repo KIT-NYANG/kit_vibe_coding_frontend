@@ -1,7 +1,7 @@
 import type { TeacherHomeModel } from '../../entities/teacher/types'
 
 const placeholderMeta = {
-  category: '백엔드',
+  category: 'BACKEND',
   description: '',
   createdAt: '2026-01-01T00:00:00',
 } as const
