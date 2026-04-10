@@ -25,6 +25,10 @@ export interface UseMainHomeResult {
   lecturesLoading: boolean
   lecturesError: string | null
   refetchLectures: () => Promise<void>
+  filterKeywordDraft: string
+  setFilterKeywordDraft: (value: string) => void
+  applyFilters: () => void
+  resetFilters: () => void
 }
 
 export const useMainHome = (): UseMainHomeResult => {
@@ -33,6 +37,9 @@ export const useMainHome = (): UseMainHomeResult => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     () => staticModel.categories[0]?.id ?? '',
   )
+
+  const [keywordFilter, setKeywordFilter] = useState('')
+  const [filterKeywordDraft, setFilterKeywordDraft] = useState('')
 
   const [lecturePageIndex, setLecturePageIndex] = useState(0)
   const [displayedLectures, setDisplayedLectures] = useState<MainHomeModel['lectures']>([])
@@ -67,6 +74,17 @@ export const useMainHome = (): UseMainHomeResult => {
     setLecturePageIndex(0)
   }, [])
 
+  const applyFilters = useCallback(() => {
+    setKeywordFilter(filterKeywordDraft)
+    setLecturePageIndex(0)
+  }, [filterKeywordDraft])
+
+  const resetFilters = useCallback(() => {
+    setFilterKeywordDraft('')
+    setKeywordFilter('')
+    setLecturePageIndex(0)
+  }, [])
+
   const fetchLecturePage = useCallback(
     async (pageNum: number) => {
       setLecturesLoading(true)
@@ -76,6 +94,7 @@ export const useMainHome = (): UseMainHomeResult => {
           page: pageNum,
           size: LECTURE_LIST_PAGE_SIZE,
           category: selectedCategoryId.trim() || undefined,
+          keyword: keywordFilter.trim() || undefined,
         })
         setLecturePageIndex(res.page)
         setDisplayedLectures(
@@ -98,7 +117,7 @@ export const useMainHome = (): UseMainHomeResult => {
         setLecturesLoading(false)
       }
     },
-    [selectedCategoryId],
+    [selectedCategoryId, keywordFilter],
   )
 
   useEffect(() => {
@@ -147,5 +166,9 @@ export const useMainHome = (): UseMainHomeResult => {
     lecturesLoading,
     lecturesError,
     refetchLectures,
+    filterKeywordDraft,
+    setFilterKeywordDraft,
+    applyFilters,
+    resetFilters,
   }
 }

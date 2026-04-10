@@ -37,6 +37,10 @@ const StudentHomeContent = () => {
     lecturesLoading,
     lecturesError,
     refetchLectures,
+    filterKeywordDraft,
+    setFilterKeywordDraft,
+    applyFilters,
+    resetFilters,
   } = useMainHome()
 
   return (
@@ -64,6 +68,10 @@ const StudentHomeContent = () => {
         onRetry={() => void refetchLectures()}
         showArrows={showLectureArrows}
         totalInCategory={totalLecturesInCategory}
+        filterKeywordDraft={filterKeywordDraft}
+        onFilterKeywordDraftChange={setFilterKeywordDraft}
+        onApplyFilters={applyFilters}
+        onResetFilters={resetFilters}
       />
     </div>
   )

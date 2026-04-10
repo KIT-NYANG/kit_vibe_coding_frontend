@@ -1,5 +1,6 @@
 import type { CategoryLecture } from '../../entities/main/types'
 import { THUMBNAIL_PLACEHOLDER } from '../../shared/lib/resolveApiAssetUrl'
+import { NotebookTabs, RefreshCw, Search } from 'lucide-react'
 
 interface CategoryPreviewGridProps {
   lectures: CategoryLecture[]
@@ -15,6 +16,11 @@ interface CategoryPreviewGridProps {
   onRetry?: () => void
   /** 지정 시 카드 클릭으로 강좌 상세 이동 등 */
   onLectureClick?: (lecture: CategoryLecture) => void
+  // 검색창 props
+  filterKeywordDraft?: string
+  onFilterKeywordDraftChange?: (value: string) => void
+  onApplyFilters?: () => void
+  onResetFilters?: () => void
 }
 
 export const CategoryPreviewGrid = ({
@@ -30,18 +36,85 @@ export const CategoryPreviewGrid = ({
   error = null,
   onRetry,
   onLectureClick,
+  filterKeywordDraft = '',
+  onFilterKeywordDraftChange,
+  onApplyFilters,
+  onResetFilters,
 }: CategoryPreviewGridProps) => {
   return (
     <section
       aria-labelledby="preview-list-heading"
       className="rounded-xl bg-palette-accent/10 p-3 ring-1 ring-palette-primary/15 sm:p-4"
     >
-      <h2 id="preview-list-heading" className="mb-3 text-sm font-semibold text-fg">
-        {categoryLabel ? `${categoryLabel} 강의` : '강의'}
-        {!loading && !error && totalInCategory > 0 ? (
-          <span className="ml-2 font-normal text-fg-subtle">({totalInCategory}개)</span>
-        ) : null}
-      </h2>
+      <div className="mb-4 flex items-end justify-between gap-4">
+        <div>
+          <h2 id="preview-list-heading" className="text-lg font-bold text-fg sm:text-xl">
+            {categoryLabel ? `${categoryLabel} 강좌` : '강좌'}
+          </h2>
+
+          <p className="preview-bounce-text mt-1 text-sm font-medium text-palette-primary/90"
+            aira-label={categoryLabel
+              ? `${categoryLabel} 관련 강좌를 추천해요`
+              : '추천 강좌를 확인해보세요'}
+            >
+
+              {(categoryLabel
+                ? `${categoryLabel} 관련 강좌를 추천해요`
+                : '추천 강좌를 확인해보세요'
+              ).split('').map((char, index) => (
+                <span
+                  key={`${char}-${index}`}
+                  className="preview-bounce-letter"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                  aria-hidden="true"
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
+          </p>
+        </div>
+
+          <div className="flex shrink-0 items-center gap-2">
+            <div className="flex items-center gap-2 rounded-lg border border-palette-primary/12 bg-white/80 px-3 py-1 shadow-sm">
+              <input
+                type="text"
+                value={filterKeywordDraft}
+                onChange={(e) => onFilterKeywordDraftChange?.(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    onApplyFilters?.()
+                  }
+                }}
+                placeholder="검색어를 입력해주세요"
+                className="w-32 bg-transparent text-sm text-fg placeholder:text-fg-subtle focus:outline-none sm:w-40"
+              />
+
+              <button
+                type="button"
+                aria-label="검색"
+                onClick={onApplyFilters}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-palette-primary/12 bg-palette-primary text-white transition hover:bg-palette-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+              >
+                <Search aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </button>
+              <button
+                type="button"
+                aria-label="검색 초기화"
+                onClick={onResetFilters}
+                className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-palette-primary/12 bg-white text-palette-primary transition hover:bg-palette-accent/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+              >
+                <RefreshCw aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </button>
+            </div>
+            
+            {!loading && !error && totalInCategory > 0 ? (
+              <div className="inline-flex items-center gap-2 rounded-lg bg-palette-accent/20 px-3 py-2 text-sm font-semibold text-palette-primary">
+                <NotebookTabs aria-hidden className="h-4 w-4" strokeWidth={2} />
+                <span>{totalInCategory}개의 강좌</span>
+              </div>
+            ) : null}
+          </div>
+      </div>
 
       {loading ? (
         <p className="rounded-lg bg-surface px-4 py-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/10">
@@ -150,6 +223,38 @@ export const CategoryPreviewGrid = ({
           </ul>
         </div>
       )}
+
+      <style>
+        {`
+          .preview-bounce-text {
+            line-height: 1.5;
+          }
+
+          .preview-bounce-letter {
+            position: relative;
+            top: 0;
+            display: inline-block;
+            animation: previewBounce 0.7s ease-in-out infinite alternate;
+            text-shadow:
+              0 1px 0 rgba(203, 213, 225, 0.55),
+              0 4px 10px rgba(15, 23, 42, 0.08);
+          }
+
+          @keyframes previewBounce {
+            0% {
+              top: 0;
+            }
+            100% {
+              top: -3px;
+              text-shadow:
+                0 1px 0 rgba(203, 213, 225, 0.6),
+                0 8px 12px rgba(15, 23, 42, 0.12);
+            }
+          }
+        `}
+      </style>
+
     </section>
+    
   )
 }
