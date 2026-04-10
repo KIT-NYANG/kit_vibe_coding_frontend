@@ -21,7 +21,7 @@ const StudentHomeContent = () => {
   const navigate = useNavigate()
   const {
     model,
-    currentSlideLine,
+    currentSlideDescription,
     goPrevSlide,
     goNextSlide,
     selectedCategoryId,
@@ -39,15 +39,12 @@ const StudentHomeContent = () => {
     refetchLectures,
   } = useMainHome()
 
-  const slideLabel = `히어로 배너 ${model.heroSlides.length}장 중 표시`
-
   return (
     <div className="space-y-6">
       <HeroCarouselBanner
-        line={currentSlideLine}
         onNext={goNextSlide}
         onPrev={goPrevSlide}
-        slideLabel={slideLabel}
+        badgeText={currentSlideDescription}
       />
       <CategoryChipRow
         categories={model.categories}

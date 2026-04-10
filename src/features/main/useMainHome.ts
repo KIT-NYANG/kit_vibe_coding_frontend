@@ -9,7 +9,7 @@ const LECTURE_LIST_PAGE_SIZE = 10
 
 export interface UseMainHomeResult {
   model: MainHomeModel
-  currentSlideLine: string
+  currentSlideDescription: string
   goPrevSlide: () => void
   goNextSlide: () => void
   selectedCategoryId: string
@@ -29,7 +29,7 @@ export interface UseMainHomeResult {
 
 export const useMainHome = (): UseMainHomeResult => {
   const staticModel = useMemo(() => mainHomeData, [])
-  const [slideIndex, setSlideIndex] = useState(0)
+  const [currentSlideIndex, setSlideIndex] = useState(0)
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     () => staticModel.categories[0]?.id ?? '',
   )
@@ -55,7 +55,7 @@ export const useMainHome = (): UseMainHomeResult => {
     setSlideIndex((i) => (i + 1) % slideCount)
   }, [slideCount])
 
-  const currentSlideLine = staticModel.heroSlides[slideIndex]?.line ?? ''
+  const currentSlideDescription = staticModel.heroSlides[currentSlideIndex]?.description ?? ''
 
   const selectedCategoryLabel = useMemo(() => {
     const found = staticModel.categories.find((c) => c.id === selectedCategoryId)
@@ -131,7 +131,7 @@ export const useMainHome = (): UseMainHomeResult => {
 
   return {
     model,
-    currentSlideLine,
+    currentSlideDescription,
     goPrevSlide,
     goNextSlide,
     selectedCategoryId,
