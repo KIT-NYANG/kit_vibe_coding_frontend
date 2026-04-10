@@ -425,31 +425,3 @@ export const HeroCarouselBanner = ({
     </section>
   )
 }
-
-interface AnimatedConnectorProps {
-  delay?: number
-}
-
-const AnimatedConnector = ({ delay = 0 }: AnimatedConnectorProps) => {
-  return (
-    <div className="hidden items-center sm:flex">
-      <div
-        className="h-[2px] rounded-full bg-palette-primary/40"
-        style={{
-          width: 0,
-          animation: 'heroDrawLine 0.35s ease forwards',
-          animationDelay: `${delay}s`,
-        }}
-      />
-      <span
-        className="ml-1 text-palette-primary/70 opacity-0"
-        style={{
-          animation: 'heroFadeUp 0.2s ease forwards',
-          animationDelay: `${delay + 0.2}s`,
-        }}
-      >
-        →
-      </span>
-    </div>
-  )
-}
