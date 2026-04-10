@@ -96,7 +96,7 @@ export const StudentMyPage = () => {
       <CategoryPreviewGrid
         canGoNext={canGoNext}
         canGoPrev={canGoPrev}
-        categoryLabel="내 강좌"
+        categoryLabel="수강 중인"
         error={error}
         lectures={displayedLectures}
         loading={loading}
@@ -110,6 +110,9 @@ export const StudentMyPage = () => {
         onRetry={() => void refetch()}
         showArrows={showArrows}
         totalInCategory={totalLectures}
+        showSubtitle={false}
+        showSearchBar={false}
+        showLectureCount={false}
       />
     </div>
   )

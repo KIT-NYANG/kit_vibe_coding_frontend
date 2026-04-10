@@ -6,6 +6,7 @@ export const mainHomeData: MainHomeModel = {
   brand: brandData,
   heroSlides: [],
   categories: [
+    { id: '', label: '전체' },
     { id: 'BACKEND', label: '백엔드' },
     { id: 'FRONTEND', label: '프론트엔드' },
     { id: 'AI', label: 'AI' },

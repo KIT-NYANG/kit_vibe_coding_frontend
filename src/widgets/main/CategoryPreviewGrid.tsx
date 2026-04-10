@@ -21,6 +21,11 @@ interface CategoryPreviewGridProps {
   onFilterKeywordDraftChange?: (value: string) => void
   onApplyFilters?: () => void
   onResetFilters?: () => void
+
+  // /mypage에서는 검색창, 문구가 안 보이게 설정하기 위해 추가
+  showSubtitle?: boolean
+  showSearchBar?: boolean
+  showLectureCount?: boolean
 }
 
 export const CategoryPreviewGrid = ({
@@ -40,6 +45,9 @@ export const CategoryPreviewGrid = ({
   onFilterKeywordDraftChange,
   onApplyFilters,
   onResetFilters,
+  showSubtitle = true,
+  showSearchBar = true,
+  showLectureCount = true,
 }: CategoryPreviewGridProps) => {
   return (
     <section
@@ -51,14 +59,18 @@ export const CategoryPreviewGrid = ({
           <h2 id="preview-list-heading" className="text-lg font-bold text-fg sm:text-xl">
             {categoryLabel ? `${categoryLabel} 강좌` : '강좌'}
           </h2>
-
+        {showSubtitle ? (
           <p className="preview-bounce-text mt-1 text-sm font-medium text-palette-primary/90"
-            aira-label={categoryLabel
-              ? `${categoryLabel} 관련 강좌를 추천해요`
-              : '추천 강좌를 확인해보세요'}
-            >
+            aria-label={categoryLabel === '전체'
+                ? '전체 강좌를 확인해보세요'
+                : categoryLabel
+                  ? `${categoryLabel} 관련 강좌를 추천해요`
+                  : '추천 강좌를 확인해보세요'}
+              >
 
-              {(categoryLabel
+              {(categoryLabel === '전체'
+                ? '전체 강좌를 확인해보세요'
+                : categoryLabel
                 ? `${categoryLabel} 관련 강좌를 추천해요`
                 : '추천 강좌를 확인해보세요'
               ).split('').map((char, index) => (
@@ -72,9 +84,11 @@ export const CategoryPreviewGrid = ({
                 </span>
               ))}
           </p>
+        ) : null}
         </div>
 
           <div className="flex shrink-0 items-center gap-2">
+            {showSearchBar ? (
             <div className="flex items-center gap-2 rounded-lg border border-palette-primary/12 bg-white/80 px-3 py-1 shadow-sm">
               <input
                 type="text"
@@ -106,8 +120,8 @@ export const CategoryPreviewGrid = ({
                 <RefreshCw aria-hidden className="h-4 w-4" strokeWidth={2} />
               </button>
             </div>
-            
-            {!loading && !error && totalInCategory > 0 ? (
+          ) : null}
+            {showLectureCount && !loading && !error && totalInCategory > 0 ? (
               <div className="inline-flex items-center gap-2 rounded-lg bg-palette-accent/20 px-3 py-2 text-sm font-semibold text-palette-primary">
                 <NotebookTabs aria-hidden className="h-4 w-4" strokeWidth={2} />
                 <span>{totalInCategory}개의 강좌</span>

@@ -1,4 +1,5 @@
 import { useId, useState, type SubmitEvent } from 'react'
+import { LockKeyholeOpen, Mail } from 'lucide-react'
 
 interface LoginModalProps {
   open: boolean
@@ -63,36 +64,40 @@ export const LoginModal = ({ open, onClose, onSubmit, notice }: LoginModalProps)
 
         <form className={`space-y-4 ${notice ? 'mt-4' : 'mt-6'}`} onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="login-email">
-              이메일
-            </label>
-            <input
-              autoComplete="email"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
-              id="login-email"
-              name="email"
-              required
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="login-password">
-              비밀번호
-            </label>
+            <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <Mail aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
+                <input
+                  autoComplete="email"
+                  className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
+                  id="login-email"
+                  name="email"
+                  required
+                  type="email"
+                  placeholder="이메일을 입력해 주세요"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <LockKeyholeOpen aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
               autoComplete="current-password"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="login-password"
               name="password"
               required
               type="password"
+              placeholder="비밀번호를 입력해 주세요"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-
           {error ? (
             <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200" role="alert">
               {error}
