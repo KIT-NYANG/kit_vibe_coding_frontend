@@ -3,6 +3,7 @@ import { useAuthSession } from '../features/auth/useAuthSession'
 import { useStudentMyPage } from '../features/student/useStudentMyPage'
 import { LECTURE_CATEGORY_OPTIONS } from '../shared/lib/lectureCategories'
 import { CategoryPreviewGrid } from '../widgets/main/CategoryPreviewGrid'
+import { House } from 'lucide-react'
 
 export const StudentMyPage = () => {
   const navigate = useNavigate()
@@ -43,10 +44,11 @@ export const StudentMyPage = () => {
         </div>
         <button
           type="button"
-          className="self-start text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
+          className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
           onClick={() => navigate('/')}
         >
           ← 홈
+          <House aria-hidden className="h-5 w-6" strokeWidth={2} />
         </button>
       </div>
 

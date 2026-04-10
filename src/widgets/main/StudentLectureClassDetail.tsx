@@ -3,6 +3,7 @@ import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
 import { getLectureCategoryLabel } from '../../shared/lib/lectureCategories'
 import { THUMBNAIL_PLACEHOLDER } from '../../shared/lib/resolveApiAssetUrl'
+import { House } from 'lucide-react'
 
 const formatUploadDate = (iso: string): string => {
   try {
@@ -79,10 +80,11 @@ export const StudentLectureClassDetail = ({
     <div className="space-y-6">
       <button
         type="button"
-        className="text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+        className="inline-flex gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
         onClick={onBack}
       >
         {backLabel}
+        <House aria-hidden className="h-5 w-6" strokeWidth={2} />
       </button>
 
       <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
