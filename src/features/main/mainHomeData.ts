@@ -4,12 +4,9 @@ import { brandData } from '../brand/brandData'
 /** 브랜드·히어로·카테고리 칩만 유지. 강좌 목록은 `useMainHome`에서 API로 채웁니다. */
 export const mainHomeData: MainHomeModel = {
   brand: brandData,
-  heroSlides: [
-    { id: 's1', line: 'AI 가 학습 경로를 추천해 주는' },
-    { id: 's2', line: 'AI 가 코드 리뷰를 도와주는' },
-    { id: 's3', line: 'AI 가 질문에 답해 주는' },
-  ],
+  heroSlides: [],
   categories: [
+    { id: '', label: '전체' },
     { id: 'BACKEND', label: '백엔드' },
     { id: 'FRONTEND', label: '프론트엔드' },
     { id: 'AI', label: 'AI' },

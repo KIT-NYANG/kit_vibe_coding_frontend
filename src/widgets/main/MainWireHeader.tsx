@@ -1,4 +1,4 @@
-import { PanelRightClose } from 'lucide-react'
+import { Menu, LogOut, User, UserLock, UserPlus } from 'lucide-react'
 import type { BrandLogo } from '../../entities/main/types'
 
 interface MainWireHeaderProps {
@@ -14,8 +14,14 @@ interface MainWireHeaderProps {
   onLogout: () => void
 }
 
-const textActionClass =
-  'cursor-pointer border-0 bg-transparent p-0 text-sm font-medium text-fg underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
+const actionButtonClass =
+  'inline-flex items-center gap-2 rounded-full border border-palette-primary/12 bg-white/70 px-3 py-2 text-sm font-medium text-fg transition hover:border-palette-primary/25 hover:bg-palette-accent/20 hover:text-palette-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
+
+const primaryActionButtonClass =
+  'inline-flex items-center gap-2 rounded-full bg-palette-primary px-3.5 py-2 text-sm font-semibold text-white transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
+
+const userBadgeButtonClass =
+  'inline-flex items-center gap-2 rounded-full bg-palette-accent/25 px-3 py-2 text-sm font-medium text-fg transition hover:bg-palette-accent/40 hover:text-palette-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
 
 export const MainWireHeader = ({
   brand,
@@ -29,7 +35,7 @@ export const MainWireHeader = ({
 }: MainWireHeaderProps) => {
   return (
     <header className="border-b border-palette-primary/15 bg-surface/95 px-4 py-3 backdrop-blur-sm sm:px-6">
-      <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 sm:gap-4">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <img
             alt={brand.alt}
@@ -42,31 +48,35 @@ export const MainWireHeader = ({
         <div className="flex shrink-0 items-center gap-3 sm:gap-4">
           {isLoggedIn ? (
             <>
-              <p className="max-w-[min(20rem,85vw)] text-xs text-fg-subtle sm:text-sm">
                 {onWelcomeNameClick ? (
                   <button
                     type="button"
-                    className="font-medium text-fg underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+                    className={userBadgeButtonClass}
                     onClick={onWelcomeNameClick}
                   >
-                    {welcomeName ?? '회원'}
+                    <UserLock aria-hidden className="h-4 w-4" strokeWidth={1.9} />
+                    <span>{welcomeName ?? '회원'}님</span>
                   </button>
                 ) : (
-                  <span className="font-medium text-fg">{welcomeName ?? '회원'}</span>
+                  <div className={userBadgeButtonClass}>
+                    <UserLock aria-hidden className="h-4 w-4" strokeWidth={1.9} />
+                    <span className="font-medium text-fg">{welcomeName ?? '회원'}님</span>
+                  </div>
                 )}
-                님 환영합니다.
-              </p>
-              <button className={textActionClass} type="button" onClick={onLogout}>
-                로그아웃
+              <button className={actionButtonClass} type="button" onClick={onLogout}>
+                <LogOut aria-hidden className="h-4 w-4" strokeWidth={1.9} />
+                <span>로그아웃</span>
               </button>
             </>
           ) : (
             <>
-              <button className={textActionClass} type="button" onClick={onOpenLogin}>
-                로그인
+              <button className={actionButtonClass} type="button" onClick={onOpenLogin}>
+                <User aria-hidden className="h-4 w-4" strokeWidth={1.9} />
+                <span>로그인</span>
               </button>
-              <button className={textActionClass} type="button" onClick={onOpenSignup}>
-                회원가입
+              <button className={primaryActionButtonClass} type="button" onClick={onOpenSignup}>
+                <UserPlus aria-hidden className="h-4 w-4" strokeWidth={1.9} />
+                <span>회원가입</span>
               </button>
             </>
           )}
@@ -76,7 +86,7 @@ export const MainWireHeader = ({
             className="rounded-md bg-transparent p-1.5 text-palette-primary transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
             onClick={onMenuClick}
           >
-            <PanelRightClose aria-hidden className="h-6 w-6" strokeWidth={1.75} />
+            <Menu aria-hidden className="h-8 w-8" strokeWidth={1.75} />
           </button>
         </div>
       </div>

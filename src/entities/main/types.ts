@@ -9,7 +9,11 @@ export interface BrandLogo {
 export interface HeroSlide {
   id: string
   /** 히어로 배너에 표시할 한 줄 문구 */
-  line: string
+  // line: string
+  title: string
+  description: string
+  imageUrl: string
+  steps: string[]
 }
 
 export interface CategoryChip {

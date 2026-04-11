@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Trash2, CalendarClock, FileText, Tag } from 'lucide-react'
 import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
 import { formatSttStatusBadge } from '../../features/teacher/sttStatusLabel'
@@ -74,7 +74,7 @@ export const TeacherLectureDetail = ({
         ← 업로드한 강좌 목록
       </button>
 
-      <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
+      <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">{lecture.title}</h1>
           <button
@@ -106,25 +106,56 @@ export const TeacherLectureDetail = ({
           </div>
         </div>
 
-        <div className="mx-auto mt-8 max-w-2xl space-y-3 rounded-xl bg-surface px-5 py-5 ring-1 ring-palette-primary/12 sm:px-6">
-          <p className="text-sm leading-relaxed text-fg">
-            <span className="font-semibold text-fg">카테고리</span>
-            <span className="text-fg-subtle">: </span>
-            {getLectureCategoryLabel(lecture.category)}
-          </p>
-          <p className="text-sm leading-relaxed text-fg">
-            <span className="font-semibold text-fg">설명</span>
-            <span className="text-fg-subtle">: </span>
-            {lecture.description.trim() ? lecture.description : '등록된 설명이 없습니다.'}
-          </p>
-        </div>
+        <div className="mx-auto mt-8 max-w-2xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/5 bg-palette-accent/20 px-4 py-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <Tag className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                  카테고리
+                </p>
+                <p className="mt-1 text-sm font-medium text-fg">
+                  {getLectureCategoryLabel(lecture.category)}
+                </p>
+              </div>
+            </div>
 
-        <p className="mx-auto mt-6 max-w-2xl text-right text-xs text-fg-subtle sm:text-sm">
-          업로드일: {formatUploadDate(lecture.createdAt)}
-        </p>
+            <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-slate-50/100 px-4 py-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <CalendarClock className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                  업로드일
+                </p>
+                <p className="mt-1 text-sm font-medium text-fg">
+                  {formatUploadDate(lecture.createdAt)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-start gap-3 rounded-2xl border border-palette-primary/5 bg-palette-accent/14 px-4 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+              <FileText className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                설명
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-fg">
+                {lecture.description.trim()
+                  ? lecture.description
+                  : '등록된 설명이 없습니다.'}
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
+      <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-fg">강의 영상</h2>

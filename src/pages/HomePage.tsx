@@ -21,7 +21,7 @@ const StudentHomeContent = () => {
   const navigate = useNavigate()
   const {
     model,
-    currentSlideLine,
+    currentSlideDescription,
     goPrevSlide,
     goNextSlide,
     selectedCategoryId,
@@ -37,17 +37,18 @@ const StudentHomeContent = () => {
     lecturesLoading,
     lecturesError,
     refetchLectures,
+    filterKeywordDraft,
+    setFilterKeywordDraft,
+    applyFilters,
+    resetFilters,
   } = useMainHome()
-
-  const slideLabel = `히어로 배너 ${model.heroSlides.length}장 중 표시`
 
   return (
     <div className="space-y-6">
       <HeroCarouselBanner
-        line={currentSlideLine}
         onNext={goNextSlide}
         onPrev={goPrevSlide}
-        slideLabel={slideLabel}
+        badgeText={currentSlideDescription}
       />
       <CategoryChipRow
         categories={model.categories}
@@ -67,6 +68,10 @@ const StudentHomeContent = () => {
         onRetry={() => void refetchLectures()}
         showArrows={showLectureArrows}
         totalInCategory={totalLecturesInCategory}
+        filterKeywordDraft={filterKeywordDraft}
+        onFilterKeywordDraftChange={setFilterKeywordDraft}
+        onApplyFilters={applyFilters}
+        onResetFilters={resetFilters}
       />
     </div>
   )
@@ -96,6 +101,7 @@ const TeacherHomeContent = () => {
     setFilterCategoryDraft,
     setFilterKeywordDraft,
     applyFilters,
+    resetFilters,
   } = useTeacherHome()
 
   const goToLectureDetail = (lecture: TeacherLectureCard) => {
@@ -126,6 +132,7 @@ const TeacherHomeContent = () => {
         showArrows={showArrows}
         totalLectures={totalLectures}
         totalPages={totalPages}
+        onResetFilters={resetFilters}
       />
       <CreateLectureModal
         open={createLectureOpen}

@@ -1,6 +1,7 @@
 import { useId, useState, type SubmitEvent } from 'react'
 import type { SignupRequestBody, UserRole } from '../../entities/auth/types'
 import { useEmailCheck } from '../../features/auth/useEmailCheck'
+import { LockKeyholeOpen, Mail, ShieldCheck, UserRoundPen, UserRoundCog, Phone, BookMarked } from 'lucide-react'
 
 interface SignupModalProps {
   open: boolean
@@ -98,17 +99,19 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
 
         <form className="mt-6 max-h-[min(70vh,560px)] space-y-3 overflow-y-auto pr-1" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-email">
-              이메일
-            </label>
+            <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <Mail aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
               autoComplete="email"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="signup-email"
               name="email"
               required
               type="email"
               value={email}
+              placeholder="이메일을 입력해 주세요"
               onBlur={() => checkEmail(email)}
               onChange={(e) => {
                 setEmail(e.target.value)
@@ -117,7 +120,7 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             />
             {emailStatus !== 'idle' ? (
               <p
-                className={`mt-1 text-xs ${
+                className={`mt-2 rounded-md px-2 py-0.5 text-xs ${
                   emailStatus === 'available'
                     ? 'text-emerald-700'
                     : emailStatus === 'checking'
@@ -130,69 +133,72 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
               </p>
             ) : null}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-password">
-              비밀번호
-            </label>
+            <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <LockKeyholeOpen aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
               autoComplete="new-password"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="signup-password"
               name="password"
               minLength={8}
               maxLength={19}
               required
               type="password"
+              placeholder="비밀번호를 입력해 주세요"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             {!passwordLengthValid && password.length > 0 ? (
-              <p className="mt-1 text-xs text-red-600" role="alert">
-                비밀번호는 8자 이상 20자 미만이어야 합니다.
+              <p className="mt-1 text-xs text-red-600 px-2 py-1.5" role="alert">
+                8자 이상 20자 미만이어야 합니다.
               </p>
             ) : null}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-password2">
-              비밀번호 확인
-            </label>
+          <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <ShieldCheck aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
               autoComplete="new-password"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="signup-password2"
               name="passwordConfirm"
               required
               type="password"
+              placeholder="비밀번호를 다시 입력해 주세요"
               value={passwordConfirm}
               onChange={(e) => setPasswordConfirm(e.target.value)}
             />
             {passwordsMismatch ? (
-              <p className="mt-1 text-xs text-red-600" role="alert">
+              <p className="mt-2 rounded-md px-2 py-0.5 text-xs text-red-600" role="alert">
                 비밀번호가 일치하지 않습니다.
               </p>
             ) : null}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-name">
-              이름
-            </label>
+          <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <UserRoundPen aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
               autoComplete="name"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="signup-name"
               name="name"
               required
               type="text"
+              placeholder="이름을 입력해 주세요"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-age">
-              나이
-            </label>
+          <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <UserRoundCog aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="signup-age"
               inputMode="numeric"
               min={1}
@@ -200,17 +206,18 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
               name="age"
               required
               type="number"
+              placeholder="나이를 입력해 주세요"
               value={age}
               onChange={(e) => setAge(e.target.value)}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-phone">
-              전화번호
-            </label>
+          <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <Phone aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <input
               autoComplete="tel"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
               id="signup-phone"
               name="phone"
               placeholder="010-0000-0000"
@@ -220,12 +227,12 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="signup-role">
-              역할
-            </label>
+          <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <BookMarked aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
             <select
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 bg-surface px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
+              className="w-full bg-transparent px-3 py-2 text-sm text-fg focus:outline-none"
               id="signup-role"
               name="role"
               value={role}
@@ -238,7 +245,7 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
               ))}
             </select>
           </div>
-
+        </div>
           {error ? (
             <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200" role="alert">
               {error}
@@ -256,7 +263,7 @@ export const SignupModal = ({ open, onClose, onSubmit }: SignupModalProps) => {
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90 disabled:opacity-50"
               disabled={pending || !canSubmit}
             >
               {pending ? '처리 중…' : '가입'}

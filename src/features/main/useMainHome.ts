@@ -9,7 +9,7 @@ const LECTURE_LIST_PAGE_SIZE = 10
 
 export interface UseMainHomeResult {
   model: MainHomeModel
-  currentSlideLine: string
+  currentSlideDescription: string
   goPrevSlide: () => void
   goNextSlide: () => void
   selectedCategoryId: string
@@ -25,14 +25,21 @@ export interface UseMainHomeResult {
   lecturesLoading: boolean
   lecturesError: string | null
   refetchLectures: () => Promise<void>
+  filterKeywordDraft: string
+  setFilterKeywordDraft: (value: string) => void
+  applyFilters: () => void
+  resetFilters: () => void
 }
 
 export const useMainHome = (): UseMainHomeResult => {
   const staticModel = useMemo(() => mainHomeData, [])
-  const [slideIndex, setSlideIndex] = useState(0)
+  const [currentSlideIndex, setSlideIndex] = useState(0)
   const [selectedCategoryId, setSelectedCategoryId] = useState(
     () => staticModel.categories[0]?.id ?? '',
   )
+
+  const [keywordFilter, setKeywordFilter] = useState('')
+  const [filterKeywordDraft, setFilterKeywordDraft] = useState('')
 
   const [lecturePageIndex, setLecturePageIndex] = useState(0)
   const [displayedLectures, setDisplayedLectures] = useState<MainHomeModel['lectures']>([])
@@ -55,7 +62,7 @@ export const useMainHome = (): UseMainHomeResult => {
     setSlideIndex((i) => (i + 1) % slideCount)
   }, [slideCount])
 
-  const currentSlideLine = staticModel.heroSlides[slideIndex]?.line ?? ''
+  const currentSlideDescription = staticModel.heroSlides[currentSlideIndex]?.description ?? ''
 
   const selectedCategoryLabel = useMemo(() => {
     const found = staticModel.categories.find((c) => c.id === selectedCategoryId)
@@ -64,6 +71,17 @@ export const useMainHome = (): UseMainHomeResult => {
 
   const selectCategory = useCallback((id: string) => {
     setSelectedCategoryId(id)
+    setLecturePageIndex(0)
+  }, [])
+
+  const applyFilters = useCallback(() => {
+    setKeywordFilter(filterKeywordDraft)
+    setLecturePageIndex(0)
+  }, [filterKeywordDraft])
+
+  const resetFilters = useCallback(() => {
+    setFilterKeywordDraft('')
+    setKeywordFilter('')
     setLecturePageIndex(0)
   }, [])
 
@@ -76,6 +94,7 @@ export const useMainHome = (): UseMainHomeResult => {
           page: pageNum,
           size: LECTURE_LIST_PAGE_SIZE,
           category: selectedCategoryId.trim() || undefined,
+          keyword: keywordFilter.trim() || undefined,
         })
         setLecturePageIndex(res.page)
         setDisplayedLectures(
@@ -98,7 +117,7 @@ export const useMainHome = (): UseMainHomeResult => {
         setLecturesLoading(false)
       }
     },
-    [selectedCategoryId],
+    [selectedCategoryId, keywordFilter],
   )
 
   useEffect(() => {
@@ -131,7 +150,7 @@ export const useMainHome = (): UseMainHomeResult => {
 
   return {
     model,
-    currentSlideLine,
+    currentSlideDescription,
     goPrevSlide,
     goNextSlide,
     selectedCategoryId,
@@ -147,5 +166,9 @@ export const useMainHome = (): UseMainHomeResult => {
     lecturesLoading,
     lecturesError,
     refetchLectures,
+    filterKeywordDraft,
+    setFilterKeywordDraft,
+    applyFilters,
+    resetFilters,
   }
 }
