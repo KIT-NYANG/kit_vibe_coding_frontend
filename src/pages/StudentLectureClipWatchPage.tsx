@@ -4,7 +4,7 @@ import type { LecturePlaybackDto } from '../entities/lecture/types'
 import { useAuthSession } from '../features/auth/useAuthSession'
 import { getLecturePlayback } from '../shared/api/lectureApi'
 import { resolveApiAssetUrl } from '../shared/lib/resolveApiAssetUrl'
-import { LectureVideoPlayer } from '../widgets/teacher/LectureVideoPlayer'
+import { StudentLectureVideoPlayer } from '../widgets/student/StudentLectureVideoPlayer'
 import type { StudentLectureLocationState } from './studentLectureLocationState'
 
 const formatDuration = (seconds: number): string => {
@@ -154,7 +154,13 @@ export const StudentLectureClipWatchPage = () => {
           </div>
         ) : null}
 
-        <LectureVideoPlayer src={videoSrc} title={data.title} />
+        <StudentLectureVideoPlayer
+          lectureId={data.lectureId}
+          src={videoSrc}
+          title={data.title}
+          segments={data.segments}
+          transcriptLanguage={data.transcriptLanguage}
+        />
       </section>
     </div>
   )

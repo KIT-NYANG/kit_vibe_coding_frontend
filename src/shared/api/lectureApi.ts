@@ -11,7 +11,9 @@ import type {
   LectureClipDto,
   LectureClipPageDto,
   LecturePlaybackDto,
+  LecturePlaybackLogSavedDto,
   MyLectureListPageDto,
+  PostLecturePlaybackLogBody,
   PostLecturePayload,
 } from '../../entities/lecture/types'
 import type { TeacherLectureCreatePayload } from '../../entities/teacher/types'
@@ -276,6 +278,35 @@ export const getLecturePlayback = async (lectureId: string | number): Promise<Le
       throw error
     }
     throw new Error('영상 정보를 불러오지 못했습니다.')
+  }
+}
+
+/**
+ * POST /api/lectures/:lectureId/logs
+ * 시청 로그 1건. 201 및 code OK/CREATED 등.
+ */
+export const postLecturePlaybackLog = async (
+  lectureId: string | number,
+  body: PostLecturePlaybackLogBody,
+): Promise<LecturePlaybackLogSavedDto> => {
+  const id = typeof lectureId === 'string' ? encodeURIComponent(lectureId) : String(lectureId)
+  try {
+    const { data } = await axiosInstance.post<ApiEnvelope<LecturePlaybackLogSavedDto>>(
+      `/api/lectures/${id}/logs`,
+      body,
+    )
+    if (!isApiSuccessCode(data.code) || data.data === null) {
+      throw new Error(data.message || '시청 로그를 저장하지 못했습니다.')
+    }
+    return data.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('시청 로그를 저장하지 못했습니다.')
   }
 }
 
