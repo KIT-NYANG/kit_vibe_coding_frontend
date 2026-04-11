@@ -6,13 +6,9 @@ FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --legacy-peer-deps
 
 COPY . .
-
-# 브라우저가 호출하는 API 베이스 URL (빌드 시 주입 — 런타임 변경 불가)
-ARG VITE_API_BASE_URL=http://localhost:8080
-ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
 
 RUN npm run build
 
