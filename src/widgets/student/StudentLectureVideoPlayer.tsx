@@ -7,9 +7,10 @@ import 'vidstack/styles/defaults.css'
 import 'vidstack/styles/ui/captions.css'
 import 'vidstack/styles/community-skin/video.css'
 
-import type { LecturePlaybackSegmentDto } from '../../entities/lecture/types'
+import type { LecturePlaybackQuizDto, LecturePlaybackSegmentDto } from '../../entities/lecture/types'
 import { segmentsToWebVttContent } from '../../shared/lib/segmentsToWebVtt'
 import { LecturePlaybackLogBridge } from './LecturePlaybackLogBridge'
+import { LectureQuizBridge } from './LectureQuizBridge'
 import { LectureResumePlaybackBridge } from './LectureResumePlaybackBridge'
 
 interface StudentLectureVideoPlayerProps {
@@ -23,6 +24,8 @@ interface StudentLectureVideoPlayerProps {
   segments?: LecturePlaybackSegmentDto[] | null
   /** 자막 트랙 `srclang` (BCP 47) */
   transcriptLanguage?: string | null
+  /** 분석 퀴즈 — `quizInsertTimeSec`에 O/X 퀴즈 표시 */
+  quizzes?: LecturePlaybackQuizDto[] | null
 }
 
 /**
@@ -35,6 +38,7 @@ export const StudentLectureVideoPlayer = ({
   src,
   segments,
   transcriptLanguage,
+  quizzes,
 }: StudentLectureVideoPlayerProps) => {
   const textTracks = useMemo((): TextTrackInit[] => {
     const vtt = segmentsToWebVttContent(segments ?? undefined)
@@ -67,6 +71,7 @@ export const StudentLectureVideoPlayer = ({
         </MediaOutlet>
         <LecturePlaybackLogBridge lectureId={lectureId} />
         <LectureResumePlaybackBridge lectureId={lectureId} durationSeconds={durationSeconds} />
+        <LectureQuizBridge key={lectureId} quizzes={quizzes ?? []} />
         <MediaCommunitySkin />
       </MediaPlayer>
     </div>

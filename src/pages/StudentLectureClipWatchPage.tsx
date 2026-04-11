@@ -161,6 +161,7 @@ export const StudentLectureClipWatchPage = () => {
           title={data.title}
           segments={data.segments}
           transcriptLanguage={data.transcriptLanguage}
+          quizzes={data.analysis?.quizzes}
         />
       </section>
     </div>
