@@ -3,7 +3,7 @@ import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
 import { getLectureCategoryLabel } from '../../shared/lib/lectureCategories'
 import { THUMBNAIL_PLACEHOLDER } from '../../shared/lib/resolveApiAssetUrl'
-import { House } from 'lucide-react'
+import { House, UserRound, CalendarClock, FileText, Tag } from 'lucide-react'
 
 const formatUploadDate = (iso: string): string => {
   try {
@@ -87,7 +87,7 @@ export const StudentLectureClassDetail = ({
         <House aria-hidden className="h-5 w-6" strokeWidth={2} />
       </button>
 
-      <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
+      <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <h1 className="mb-6 text-2xl font-bold tracking-tight text-fg sm:text-3xl">{lecture.title}</h1>
 
         <div className="mx-auto max-w-2xl overflow-hidden rounded-2xl bg-surface shadow-md ring-1 ring-palette-primary/12">
@@ -115,18 +115,18 @@ export const StudentLectureClassDetail = ({
                   <button
                     type="button"
                     disabled
-                    className="min-w-[10rem] rounded-xl bg-palette-accent/30 px-6 py-3 text-sm font-semibold text-fg ring-1 ring-palette-primary/20"
+                    className="min-w-[10rem] rounded-xl bg-palette-accent/50 px-6 py-3 text-sm font-semibold text-fg ring-1 ring-palette-primary/20"
                   >
-                    수강중
+                    수강 중 ✅
                   </button>
                   {enrollmentCta.onCancelEnrollment ? (
                     <button
                       type="button"
                       disabled={enrollmentCta.cancelSubmitting}
-                      className="min-w-[10rem] rounded-xl border border-palette-primary/35 bg-surface px-6 py-3 text-sm font-semibold text-fg transition hover:bg-palette-accent/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:cursor-not-allowed disabled:opacity-60"
+                      className="min-w-[10rem] rounded-xl border border-red-200 bg-red-50 px-6 py-3 text-sm font-semibold text-red-700 transition hover:bg-red-100 hover:border-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400 disabled:cursor-not-allowed disabled:opacity-60"
                       onClick={enrollmentCta.onCancelEnrollment}
                     >
-                      {enrollmentCta.cancelSubmitting ? '처리 중…' : '수강취소'}
+                      {enrollmentCta.cancelSubmitting ? '처리 중…' : '수강 취소 ❌'}
                     </button>
                   ) : null}
                 </>
@@ -156,32 +156,74 @@ export const StudentLectureClassDetail = ({
           </div>
         ) : null}
 
-        <div className="mx-auto mt-8 max-w-2xl space-y-3 rounded-xl bg-surface px-5 py-5 ring-1 ring-palette-primary/12 sm:px-6">
-          {lecture.teacherName ? (
-            <p className="text-sm leading-relaxed text-fg">
-              <span className="font-semibold text-fg">강사</span>
-              <span className="text-fg-subtle">: </span>
-              {lecture.teacherName}
-            </p>
-          ) : null}
-          <p className="text-sm leading-relaxed text-fg">
-            <span className="font-semibold text-fg">카테고리</span>
-            <span className="text-fg-subtle">: </span>
-            {getLectureCategoryLabel(lecture.category)}
-          </p>
-          <p className="text-sm leading-relaxed text-fg">
-            <span className="font-semibold text-fg">설명</span>
-            <span className="text-fg-subtle">: </span>
-            {lecture.description.trim() ? lecture.description : '등록된 설명이 없습니다.'}
-          </p>
-        </div>
+        <div className="mx-auto mt-8 max-w-2xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {lecture.teacherName ? (
+              <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-palette-accent/25 px-4 py-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                  <UserRound className="h-4 w-4" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                    강사
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-fg">
+                    {lecture.teacherName}
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="hidden sm:block" />
+            )}
 
-        <p className="mx-auto mt-6 max-w-2xl text-right text-xs text-fg-subtle sm:text-sm">
-          업로드일: {formatUploadDate(lecture.createdAt)}
-        </p>
+            <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-palette-accent/15 px-4 py-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <Tag className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                  카테고리
+                </p>
+                <p className="mt-1 text-sm font-medium text-fg">
+                  {getLectureCategoryLabel(lecture.category)}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-slate-50/100 px-4 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+              <FileText className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                설명
+              </p>
+              <p className="mt-1 text-sm leading-relaxed text-fg">
+                {lecture.description.trim()
+                  ? lecture.description
+                  : '등록된 설명이 없습니다.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-3 flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-palette-accent/20 px-4 py-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+              <CalendarClock className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                업로드일
+              </p>
+              <p className="mt-1 text-sm font-medium text-fg">
+                {formatUploadDate(lecture.createdAt)}
+              </p>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section className="rounded-2xl bg-palette-accent/12 p-5 ring-1 ring-palette-primary/12 sm:p-8">
+      <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div>
           <h2 className="text-base font-semibold text-fg">강의 영상</h2>
           <p className="mt-1 text-xs text-fg-subtle">이 강좌에 등록된 영상 목록입니다.</p>
