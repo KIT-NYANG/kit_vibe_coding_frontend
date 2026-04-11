@@ -101,6 +101,7 @@ const TeacherHomeContent = () => {
     setFilterCategoryDraft,
     setFilterKeywordDraft,
     applyFilters,
+    resetFilters,
   } = useTeacherHome()
 
   const goToLectureDetail = (lecture: TeacherLectureCard) => {
@@ -131,6 +132,7 @@ const TeacherHomeContent = () => {
         showArrows={showArrows}
         totalLectures={totalLectures}
         totalPages={totalPages}
+        onResetFilters={resetFilters}
       />
       <CreateLectureModal
         open={createLectureOpen}

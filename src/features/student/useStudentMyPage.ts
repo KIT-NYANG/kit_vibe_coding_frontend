@@ -25,6 +25,7 @@ export interface UseStudentMyPageResult {
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
+  resetFilters: () => void // 필터 초기화
 }
 
 export const useStudentMyPage = (): UseStudentMyPageResult => {
@@ -48,6 +49,13 @@ export const useStudentMyPage = (): UseStudentMyPageResult => {
     setCategoryFilter(filterCategoryDraft)
     setKeywordFilter(filterKeywordDraft)
   }, [filterCategoryDraft, filterKeywordDraft])
+
+  const resetFilters = useCallback(() => {
+    setFilterCategoryDraft('')
+    setFilterKeywordDraft('')
+    setCategoryFilter('')
+    setKeywordFilter('')
+  }, [])
 
   const fetchPage = useCallback(async (nextPage: number) => {
     const { category, keyword } = filterRef.current
@@ -126,5 +134,6 @@ export const useStudentMyPage = (): UseStudentMyPageResult => {
     loading,
     error,
     refetch,
+    resetFilters,
   }
 }
