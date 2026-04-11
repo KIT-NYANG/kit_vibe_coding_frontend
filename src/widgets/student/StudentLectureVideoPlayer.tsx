@@ -10,9 +10,12 @@ import 'vidstack/styles/community-skin/video.css'
 import type { LecturePlaybackSegmentDto } from '../../entities/lecture/types'
 import { segmentsToWebVttContent } from '../../shared/lib/segmentsToWebVtt'
 import { LecturePlaybackLogBridge } from './LecturePlaybackLogBridge'
+import { LectureResumePlaybackBridge } from './LectureResumePlaybackBridge'
 
 interface StudentLectureVideoPlayerProps {
   lectureId: number
+  /** 강의 길이(초) — 이어 보기 완료 여부 판단용 */
+  durationSeconds: number
   title: string
   /** 절대 URL (resolveApiAssetUrl 적용 후) */
   src: string
@@ -27,6 +30,7 @@ interface StudentLectureVideoPlayerProps {
  */
 export const StudentLectureVideoPlayer = ({
   lectureId,
+  durationSeconds,
   title,
   src,
   segments,
@@ -49,9 +53,9 @@ export const StudentLectureVideoPlayer = ({
   }, [segments, transcriptLanguage])
 
   return (
-    <div className="aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-palette-primary/12 [&_[data-media-player]]:h-full [&_[data-media-player]]:w-full">
+    <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-palette-primary/12 [&_[data-media-player]]:h-full [&_[data-media-player]]:w-full">
       <MediaPlayer
-        className="h-full w-full"
+        className="relative h-full w-full"
         crossOrigin=""
         playsInline
         src={src}
@@ -62,6 +66,7 @@ export const StudentLectureVideoPlayer = ({
           <MediaCaptions />
         </MediaOutlet>
         <LecturePlaybackLogBridge lectureId={lectureId} />
+        <LectureResumePlaybackBridge lectureId={lectureId} durationSeconds={durationSeconds} />
         <MediaCommunitySkin />
       </MediaPlayer>
     </div>

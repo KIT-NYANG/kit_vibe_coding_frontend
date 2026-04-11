@@ -10,6 +10,7 @@ import type {
   PostLectureListEnrollmentBody,
   LectureClipDto,
   LectureClipPageDto,
+  LectureLastPositionDto,
   LecturePlaybackDto,
   LecturePlaybackLogSavedDto,
   MyLectureListPageDto,
@@ -278,6 +279,33 @@ export const getLecturePlayback = async (lectureId: string | number): Promise<Le
       throw error
     }
     throw new Error('영상 정보를 불러오지 못했습니다.')
+  }
+}
+
+/**
+ * GET /api/lectures/:lectureId/logs/last-position
+ * 마지막 시청 위치. 시청 이력이 없으면 lastPositionSec 0, sessionId null.
+ */
+export const getLectureLastPosition = async (
+  lectureId: string | number,
+): Promise<LectureLastPositionDto> => {
+  const id = typeof lectureId === 'string' ? encodeURIComponent(lectureId) : String(lectureId)
+  try {
+    const { data } = await axiosInstance.get<ApiEnvelope<LectureLastPositionDto>>(
+      `/api/lectures/${id}/logs/last-position`,
+    )
+    if (!isApiSuccessCode(data.code) || data.data === null) {
+      throw new Error(data.message || '시청 위치를 불러오지 못했습니다.')
+    }
+    return data.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('시청 위치를 불러오지 못했습니다.')
   }
 }
 

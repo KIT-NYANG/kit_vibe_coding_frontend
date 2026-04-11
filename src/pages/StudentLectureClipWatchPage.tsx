@@ -156,6 +156,7 @@ export const StudentLectureClipWatchPage = () => {
 
         <StudentLectureVideoPlayer
           lectureId={data.lectureId}
+          durationSeconds={data.durationSeconds}
           src={videoSrc}
           title={data.title}
           segments={data.segments}
