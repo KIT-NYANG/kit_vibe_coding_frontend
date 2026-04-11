@@ -1,0 +1,21 @@
+# 사용법:
+#   1) .env.example 을 복사해 `.env` 생성
+#   2) `.env` 에서 VITE_API_BASE_URL 등 수정
+#   3) 이 파일과 같은 디렉터리에서: docker compose up --build
+#
+# Docker Compose 는 이 yaml 과 같은 폴더의 `.env` 를 자동 로드하고,
+# ${VITE_API_BASE_URL} 을 build.args 로 넘겨 Vite 빌드에 반영합니다.
+# (.env 가 없으면 아래 기본값 사용)
+#
+# 다른 서비스(backend)와 묶을 때는 depends_on / networks 만 추가하면 됩니다.
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8080}
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+    restart: unless-stopped
