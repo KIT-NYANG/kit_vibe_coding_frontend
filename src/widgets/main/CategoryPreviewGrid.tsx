@@ -52,7 +52,7 @@ export const CategoryPreviewGrid = ({
   return (
     <section
       aria-labelledby="preview-list-heading"
-      className="rounded-xl bg-palette-accent/10 p-3 ring-1 ring-palette-primary/15 sm:p-4"
+      className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6"
     >
       <div className="mb-4 flex items-end justify-between gap-4">
         <div>
