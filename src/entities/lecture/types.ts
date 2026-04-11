@@ -111,6 +111,33 @@ export interface PostLecturePayload {
   thumbnailFile: File
 }
 
+/** STT 구간 자막 — GET /api/lectures/:lectureId `segments` */
+export interface LecturePlaybackSegmentDto {
+  startMs: number
+  endMs: number
+  text: string
+}
+
+/** AI 분석(퀴즈·가이드) — GET /api/lectures/:lectureId `analysis` */
+export interface LecturePlaybackQuizDto {
+  question: string
+  answer: string
+  explanation: string
+  supplementalDescription: string
+  quizInsertTimeSec: number
+}
+
+export interface LecturePlaybackTeacherGuideDto {
+  predictedDifficultSection: string
+  predictedReason: string
+  improvementSuggestion: string
+}
+
+export interface LecturePlaybackAnalysisDto {
+  quizzes: LecturePlaybackQuizDto[]
+  teacherGuides: LecturePlaybackTeacherGuideDto[]
+}
+
 /** GET /api/lectures/:lectureId — 단일 영상 재생 정보 */
 export interface LecturePlaybackDto {
   lectureId: number
@@ -131,4 +158,27 @@ export interface LecturePlaybackDto {
   summaryKeywords?: string | null
   sttErrorMessage?: string | null
   sttCompletedAt?: string | null
+  /** STT 기반 구간 자막 — 플레이어 WebVTT 연동용 */
+  segments?: LecturePlaybackSegmentDto[] | null
+  /** 퀴즈·난이도 가이드 등 부가 분석 */
+  analysis?: LecturePlaybackAnalysisDto | null
+}
+
+/** POST /api/lectures/:lectureId/logs — 시청 로그 (단건) */
+export interface PostLecturePlaybackLogBody {
+  sessionId: string
+  eventType: string
+  currentTimeSec: number
+  fromTimeSec: number
+  toTimeSec: number
+  /** 현재는 1 고정 */
+  playbackRate: number
+  occurredAt: string
+}
+
+export interface LecturePlaybackLogSavedDto {
+  lectureId: number
+  sessionId: string
+  lastPositionSec: number
+  message: string
 }

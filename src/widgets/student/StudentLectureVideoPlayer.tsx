@@ -1,0 +1,69 @@
+import { useMemo } from 'react'
+import { MediaCaptions, MediaCommunitySkin, MediaOutlet, MediaPlayer } from '@vidstack/react'
+import type { TextTrackInit } from 'vidstack'
+
+import 'vidstack/styles/base.css'
+import 'vidstack/styles/defaults.css'
+import 'vidstack/styles/ui/captions.css'
+import 'vidstack/styles/community-skin/video.css'
+
+import type { LecturePlaybackSegmentDto } from '../../entities/lecture/types'
+import { segmentsToWebVttContent } from '../../shared/lib/segmentsToWebVtt'
+import { LecturePlaybackLogBridge } from './LecturePlaybackLogBridge'
+
+interface StudentLectureVideoPlayerProps {
+  lectureId: number
+  title: string
+  /** 절대 URL (resolveApiAssetUrl 적용 후) */
+  src: string
+  /** STT 구간 자막 — 있으면 WebVTT로 플레이어에 연동 */
+  segments?: LecturePlaybackSegmentDto[] | null
+  /** 자막 트랙 `srclang` (BCP 47) */
+  transcriptLanguage?: string | null
+}
+
+/**
+ * 학생 시청 전용 — `LectureVideoPlayer`와 동일 UI에 재생 로그 브리지를 포함합니다.
+ */
+export const StudentLectureVideoPlayer = ({
+  lectureId,
+  title,
+  src,
+  segments,
+  transcriptLanguage,
+}: StudentLectureVideoPlayerProps) => {
+  const textTracks = useMemo((): TextTrackInit[] => {
+    const vtt = segmentsToWebVttContent(segments ?? undefined)
+    if (!vtt) return []
+    const lang = (transcriptLanguage ?? 'ko').trim() || 'ko'
+    return [
+      {
+        kind: 'subtitles',
+        label: '자막 (STT)',
+        language: lang,
+        type: 'vtt',
+        content: vtt,
+        default: true,
+      },
+    ]
+  }, [segments, transcriptLanguage])
+
+  return (
+    <div className="aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-palette-primary/12 [&_[data-media-player]]:h-full [&_[data-media-player]]:w-full">
+      <MediaPlayer
+        className="h-full w-full"
+        crossOrigin=""
+        playsInline
+        src={src}
+        title={title}
+        textTracks={textTracks}
+      >
+        <MediaOutlet>
+          <MediaCaptions />
+        </MediaOutlet>
+        <LecturePlaybackLogBridge lectureId={lectureId} />
+        <MediaCommunitySkin />
+      </MediaPlayer>
+    </div>
+  )
+}
