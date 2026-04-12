@@ -89,7 +89,7 @@ export const HeroCarouselBanner = ({
       <div className="relative overflow-hidden rounded-xl bg-surface shadow-sm ring-1 ring-palette-primary/12">
         <div
           key={currentSlide.id}
-          className={`relative min-h-[280px] sm:min-h-[320px] ${
+          className={`relative min-h-[280px] sm:min-h-[500px] ${
             direction === 'right'
               ? 'animate-[heroSlideInRight_0.45s_ease]'
               : 'animate-[heroSlideInLeft_0.45s_ease]'
@@ -111,7 +111,7 @@ export const HeroCarouselBanner = ({
           <div className="absolute inset-0 bg-white/5 backdrop-blur-[1.5px]" />
           <div className="absolute inset-0 bg-gradient-to-r from-white/100 via-white/50 to-white/30" />
 
-          <div className="relative z-10 flex min-h-[280px] flex-col justify-center px-6 py-7 sm:min-h-[320px] sm:px-8 sm:py-8 md:max-w-[72%]">
+          <div className="relative z-10 flex min-h-[280px] flex-col justify-center px-6 py-7 sm:min-h-[500px] sm:px-8 sm:py-8 md:max-w-[72%]">
             <div key={currentSlide.id} className="hero-focus-wrap">
               <h2 className="hero-focus-title hero-focus-title--blur">
                 {currentSlide.title}
@@ -123,9 +123,9 @@ export const HeroCarouselBanner = ({
 
               <div className="hero-focus-frame" aria-hidden="true" />
             </div>
-            <span className="mb-3 inline-flex w-fit rounded-full border border-white/50 bg-white/45 px-3 py-1 text-xs font-semibold text-transparent shadow-sm backdrop-blur-sm bg-clip-text bg-[length:200%_200%] bg-gradient-to-r from-blue-900 via-blue-500 to-cyan-600 animate-[heroBadgeIn_0.7s_ease,heroGradientFlow_5s_ease-in-out_infinite] sm:text-sm">
+            <span className="mb-4 inline-flex w-fit items-center rounded-full border border-white/60 bg-white/55 px-4 py-2 text-sm font-semibold text-transparent shadow-sm backdrop-blur-sm bg-clip-text bg-[length:200%_200%] bg-gradient-to-r from-blue-900 via-blue-500 to-cyan-600 animate-[heroBadgeIn_0.7s_ease,heroGradientFlow_5s_ease-in-out_infinite] sm:px-5 sm:py-2.5 sm:text-base">
               {displayedBadge}
-              <span className="ml-1 inline-block h-4 w-[2px] animate-pulse bg-palette-primary align-middle" />
+              <span className="ml-2 inline-block h-5 w-[3px] animate-pulse bg-palette-primary align-middle" />
             </span>
           </div>
         </div>
@@ -290,13 +290,13 @@ export const HeroCarouselBanner = ({
 
           {`
           .hero-focus-wrap {
-            --focus-width: 200px;
-            --focus-height: 72px;
+            --focus-width: 260px;
+            --focus-height: 100px;
 
             position: relative;
             display: inline-block;
             width: max-content;
-            min-height: 76px;
+            min-height: 130px;
           }
 
           .hero-focus-title {
@@ -305,7 +305,7 @@ export const HeroCarouselBanner = ({
             line-height: 1.1;
             letter-spacing: -0.02em;
             white-space: nowrap;
-            font-size: clamp(1.8rem, 3.2vw, 3rem);
+            font-size: clamp(2.3rem, 4.5vw, 4.2rem);
           }
 
           .hero-focus-title--blur {

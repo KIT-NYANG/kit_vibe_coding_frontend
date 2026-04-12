@@ -38,7 +38,7 @@ export const LectureVideoPlayer = ({ title, src, teacherGuides }: LectureVideoPl
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-3">
           <div>
-          <h2 className="text-base font-semibold text-fg">AI 추천 난이도 예상 구간 • 개선 제안</h2>
+          <h2 className="text-xl font-semibold text-fg">AI 추천 난이도 예상 구간 • 개선 제안</h2>
           <p className="mt-1 text-sm text-fg-subtle">
               학생이 이해하기 어려울 수 있는 구간과 강의 보완 아이디어를 확인해보세요
             </p>
@@ -70,12 +70,12 @@ export const LectureVideoPlayer = ({ title, src, teacherGuides }: LectureVideoPl
                   <div className="space-y-3 px-4 py-4 sm:px-5">
                   <div className="rounded-xl border border-amber-200/100 bg-amber-50/70 p-3">
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
-                        <TriangleAlert className="h-4 w-4" />
+                      <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100 text-amber-600">
+                        <TriangleAlert className="h-6 w-6" />
                       </div>
 
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold tracking-wide text-amber-700">
+                        <p className="text-medium font-semibold tracking-wide text-amber-700">
                           이해 어려움이 예상되는 이유
                         </p>
                         <p className="mt-1 text-sm leading-7 text-fg">
@@ -88,12 +88,12 @@ export const LectureVideoPlayer = ({ title, src, teacherGuides }: LectureVideoPl
                   
                   <div className="rounded-xl border border-violet-200/100 bg-violet-50/70 p-3">
                     <div className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
-                        <WandSparkles className="h-4 w-4" />
+                      <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-600">
+                        <WandSparkles className="h-6 w-6" />
                       </div>
 
                       <div className="min-w-0">
-                        <p className="text-xs font-semibold tracking-wide text-violet-700">
+                        <p className="text-medium font-semibold tracking-wide text-violet-700">
                           개선 제안
                         </p>
                         <p className="mt-1 text-sm leading-7 text-fg">

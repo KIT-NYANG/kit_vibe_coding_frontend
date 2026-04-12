@@ -55,12 +55,12 @@ export const StudentMyPage = () => {
 
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                <NotepadText className="h-4 w-4" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <NotepadText className="h-6 w-6" />
           </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-fg">강좌 목록{' '}
+                <h2 className="text-medium font-semibold text-fg">강좌 목록{' '}
                   <span className="ml-1 font-medium text-palette-primary">
                       ({loading ? '…' : `${totalLectures}개의 강좌 수강 중`})
                     </span>

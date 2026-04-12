@@ -112,7 +112,7 @@ export const StudentLectureClipWatchPage = () => {
   const summaryTextTrimmed = (data.summaryText ?? '').trim()
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
         type="button"
         className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
@@ -150,16 +150,16 @@ export const StudentLectureClipWatchPage = () => {
         {keywordList.length > 0 ? (
           <div className="mb-4 rounded-2xl border border-amber-200/50 bg-amber-50/80 p-4 shadow-sm ring-1 ring-amber-100">
             <div className="mb-3 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-200 text-amber-600">
-                <Star className="h-4 w-4" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-200 text-amber-600">
+                <Star className="h-6 w-6" />
               </div>
-              <p className="text-sm font-semibold text-fg">핵심 키워드</p>
+              <p className="text-xl font-semibold text-fg">핵심 키워드</p>
             </div>
             <div className="flex flex-wrap gap-2">
               {keywordList.map((kw) => (
                 <span
                   key={kw}
-                  className="inline-flex rounded-full border border-amber-200 bg-amber-200/60 px-3 py-1 text-xs font-bold text-amber-800 ring-1 ring-amber-100"
+                  className="inline-flex rounded-full border border-amber-200 bg-amber-200/60 px-3 py-1 text-base font-bold text-amber-800 ring-1 ring-amber-100"
                 >
                   {kw}
                 </span>
@@ -170,13 +170,13 @@ export const StudentLectureClipWatchPage = () => {
 
         <div className="mb-4 rounded-2xl border border-palette-primary/12 bg-white/75 p-4 shadow-sm ring-1 ring-palette-primary/8">
         <div className="mb-2 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-palette-primary/10 text-palette-primary">
-            <FileText className="h-4 w-4" />
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-palette-primary/10 text-palette-primary">
+            <FileText className="h-6 w-6" />
           </div>
-          <p className="text-sm font-semibold text-fg">설명</p>
+          <p className="text-xl font-semibold text-fg">설명</p>
         </div>
 
-        <p className="text-sm leading-7 text-fg">
+        <p className="text-base leading-7 text-fg">
           {descriptionText ? descriptionText : '설명이 없습니다.'}
         </p>
       </div>
@@ -184,13 +184,13 @@ export const StudentLectureClipWatchPage = () => {
         {summaryTextTrimmed ? (
           <div className="mb-6 rounded-2xl border border-violet-300/60 bg-violet-50/70 p-4 shadow-sm">
             <div className="mb-2 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
-                <BotMessageSquare className="h-4 w-4" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
+                <BotMessageSquare className="h-6 w-6" />
               </div>
-              <p className="text-sm font-semibold text-fg">AI 요약</p>
+              <p className="text-xl font-semibold text-fg">AI 요약</p>
             </div>
 
-            <p className="text-sm leading-7 text-fg">{summaryTextTrimmed}</p>
+            <p className="text-base leading-7 text-fg">{summaryTextTrimmed}</p>
           </div>
         ) : null}
 

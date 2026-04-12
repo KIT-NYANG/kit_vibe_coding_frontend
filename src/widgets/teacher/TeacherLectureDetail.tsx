@@ -79,7 +79,7 @@ export const TeacherLectureDetail = ({
   const iconBtnClass =
     'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-transparent text-palette-primary transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:pointer-events-none disabled:opacity-40'
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
         type="button"
         className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
@@ -104,7 +104,7 @@ export const TeacherLectureDetail = ({
           </button>
         </div>
 
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl bg-surface shadow-md ring-1 ring-palette-primary/12">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-2xl bg-surface shadow-md ring-1 ring-palette-primary/12">
           <div className="group relative aspect-video w-full overflow-hidden bg-gradient-to-br from-palette-accent/30 via-white to-palette-primary/10">
             <img
               alt={lecture.thumbnailAlt}
@@ -120,17 +120,17 @@ export const TeacherLectureDetail = ({
           </div>
         </div>
 
-        <div className="mx-auto mt-8 max-w-5xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+        <div className="mx-auto max-w-6xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/5 bg-palette-accent/20 px-4 py-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
                 <Tag className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                <p className="text-xl font-semibold tracking-wide text-fg-subtle">
                   카테고리
                 </p>
-                <p className="mt-1 text-sm font-medium text-fg">
+                <p className="mt-1 text-medium font-medium text-fg">
                   {getLectureCategoryLabel(lecture.category)}
                 </p>
               </div>
@@ -141,10 +141,10 @@ export const TeacherLectureDetail = ({
                 <CalendarClock className="h-4 w-4" />
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+                <p className="text-xl font-semibold tracking-wide text-fg-subtle">
                   업로드일
                 </p>
-                <p className="mt-1 text-sm font-medium text-fg">
+                <p className="mt-1 text-medium font-medium text-fg">
                   {formatUploadDate(lecture.createdAt)}
                 </p>
               </div>
@@ -156,10 +156,10 @@ export const TeacherLectureDetail = ({
               <FileText className="h-4 w-4" />
             </div>
             <div className="min-w-0">
-              <p className="text-xs font-semibold tracking-wide text-fg-subtle">
+              <p className="text-xl font-semibold tracking-wide text-fg-subtle">
                 설명
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-fg">
+              <p className="mt-1 text-medium leading-relaxed text-fg">
                 {lecture.description.trim()
                   ? lecture.description
                   : '등록된 설명이 없습니다.'}
@@ -172,9 +172,9 @@ export const TeacherLectureDetail = ({
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h2 className="text-base font-semibold text-fg">강의 영상</h2>
+            <h2 className="text-xl font-semibold text-fg">강의 영상</h2>
             <p 
-              className="preview-bounce-text mt-0.5 text-sm font-medium text-palette-primary/90"
+              className="preview-bounce-text mt-0.5 text-medium font-medium text-palette-primary/90"
               aria-label="이 강좌에 등록된 강의 영상 목록입니다."
             >
               {'이 강좌에 등록된 강의 영상 목록입니다.'.split('').map((char, index) => (

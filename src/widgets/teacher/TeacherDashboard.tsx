@@ -62,12 +62,12 @@ export const TeacherDashboard = ({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
         <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                    <BookType className="h-4 w-4" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                    <BookType className="h-6 w-6" />
             </div>
 
             <div>
-              <h2 className="text-sm font-semibold text-fg">
+              <h2 className="text-medium font-semibold text-fg">
                   업로드한 강좌{' '}
                   <span className="ml-1 font-medium text-palette-primary">
                     ({loading ? '…' : `${totalLectures}개`})

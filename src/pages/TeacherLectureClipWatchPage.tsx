@@ -97,7 +97,7 @@ export const TeacherLectureClipWatchPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
         type="button"
         className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
@@ -138,7 +138,7 @@ export const TeacherLectureClipWatchPage = () => {
           </div>
 
           <div className="rounded-2xl border border-palette-primary/10 bg-white/70 px-4 py-3">
-            <p className="mb-1 text-xs font-semibold uppercase tracking-wide text-fg-subtle">
+            <p className="mb-1 text-medium font-semibold uppercase tracking-wide text-fg-subtle">
               설명
             </p>
             <p className="text-sm leading-7 text-fg">
