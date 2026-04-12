@@ -7,12 +7,16 @@ import 'vidstack/styles/defaults.css'
 import 'vidstack/styles/ui/captions.css'
 import 'vidstack/styles/community-skin/video.css'
 
-import type { LecturePlaybackSegmentDto } from '../../entities/lecture/types'
+import type { LecturePlaybackQuizDto, LecturePlaybackSegmentDto } from '../../entities/lecture/types'
 import { segmentsToWebVttContent } from '../../shared/lib/segmentsToWebVtt'
 import { LecturePlaybackLogBridge } from './LecturePlaybackLogBridge'
+import { LectureQuizBridge } from './LectureQuizBridge'
+import { LectureResumePlaybackBridge } from './LectureResumePlaybackBridge'
 
 interface StudentLectureVideoPlayerProps {
   lectureId: number
+  /** 강의 길이(초) — 이어 보기 완료 여부 판단용 */
+  durationSeconds: number
   title: string
   /** 절대 URL (resolveApiAssetUrl 적용 후) */
   src: string
@@ -20,6 +24,8 @@ interface StudentLectureVideoPlayerProps {
   segments?: LecturePlaybackSegmentDto[] | null
   /** 자막 트랙 `srclang` (BCP 47) */
   transcriptLanguage?: string | null
+  /** 분석 퀴즈 — `quizInsertTimeSec`에 O/X 퀴즈 표시 */
+  quizzes?: LecturePlaybackQuizDto[] | null
 }
 
 /**
@@ -27,10 +33,12 @@ interface StudentLectureVideoPlayerProps {
  */
 export const StudentLectureVideoPlayer = ({
   lectureId,
+  durationSeconds,
   title,
   src,
   segments,
   transcriptLanguage,
+  quizzes,
 }: StudentLectureVideoPlayerProps) => {
   const textTracks = useMemo((): TextTrackInit[] => {
     const vtt = segmentsToWebVttContent(segments ?? undefined)
@@ -49,9 +57,9 @@ export const StudentLectureVideoPlayer = ({
   }, [segments, transcriptLanguage])
 
   return (
-    <div className="aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-palette-primary/12 [&_[data-media-player]]:h-full [&_[data-media-player]]:w-full">
+    <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black ring-1 ring-palette-primary/12 [&_[data-media-player]]:h-full [&_[data-media-player]]:w-full">
       <MediaPlayer
-        className="h-full w-full"
+        className="relative h-full w-full"
         crossOrigin=""
         playsInline
         src={src}
@@ -62,6 +70,8 @@ export const StudentLectureVideoPlayer = ({
           <MediaCaptions />
         </MediaOutlet>
         <LecturePlaybackLogBridge lectureId={lectureId} />
+        <LectureResumePlaybackBridge lectureId={lectureId} durationSeconds={durationSeconds} />
+        <LectureQuizBridge key={lectureId} quizzes={quizzes ?? []} />
         <MediaCommunitySkin />
       </MediaPlayer>
     </div>
