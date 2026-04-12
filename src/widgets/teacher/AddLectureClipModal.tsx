@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type SubmitEvent } from 'react'
 import type { PostLecturePayload } from '../../entities/lecture/types'
+import { Clapperboard, Type, FileText, Video, ImagePlus, X } from 'lucide-react'
 
 interface AddLectureClipModalProps {
   open: boolean
@@ -92,103 +93,156 @@ export const AddLectureClipModal = ({
       <button
         type="button"
         aria-label="닫기"
-        className="absolute inset-0 bg-palette-primary/40"
+        className="absolute inset-0 bg-black/45 backdrop-blur-[3px]"
         onClick={handleClose}
       />
-      <div className="relative z-10 max-h-[min(90vh,760px)] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface p-6 shadow-xl ring-1 ring-palette-primary/15">
-        <h2 id={titleId} className="text-lg font-semibold text-fg">
-          영상 추가
-        </h2>
-        <p className="mt-1 text-sm text-fg-subtle">영상 파일과 썸네일을 함께 등록해 주세요.</p>
+      <div className="modal-scrollbar-hidden relative z-10 max-h-[min(90vh,760px)] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-palette-primary/12 bg-white/95 shadow-[0_28px_80px_rgba(15,23,42,0.2)] ring-1 ring-palette-primary/10">
+        <div className="sticky top-0 z-10 border-b border-palette-primary/10 bg-gradient-to-r from-palette-accent/35 via-white to-palette-primary/5 px-6 py-5 backdrop-blur-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <Clapperboard className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 id={titleId} className="text-xl font-bold tracking-tight text-fg">
+                  영상 추가
+                </h2>
+                <p className="mt-1 text-sm text-fg-subtle">
+                  영상 파일과 썸네일을 함께 등록해 주세요.
+                </p>
+              </div>
+            </div>
 
-        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="clip-title">
-              영상 제목 <span className="text-red-600">*</span>
-            </label>
-            <input
-              autoComplete="off"
-              className="mt-1 w-full rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
-              id="clip-title"
-              name="title"
-              placeholder="예: 3강"
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+            <button
+              type="button"
+              aria-label="닫기"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-white/80 text-fg-subtle shadow-sm ring-1 ring-palette-primary/10 transition hover:bg-red-50 hover:text-red-600 hover:ring-red-200"
+              disabled={pending}
+              onClick={handleClose}
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-fg-subtle" htmlFor="clip-description">
-              영상 설명 <span className="text-red-600">*</span>
-            </label>
-            <textarea
-              className="mt-1 min-h-[88px] w-full resize-y rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
-              id="clip-description"
-              name="description"
-              placeholder="이 영상에서 다루는 내용을 적어 주세요."
-              rows={3}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
+        <form className="space-y-5 px-6 py-6 sm:px-7" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-5">
+            <div className="rounded-2xl border border-palette-primary/10 bg-white/80 p-4 shadow-sm ring-1 ring-palette-primary/6">
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-fg" htmlFor="clip-title">
+                <Type className="h-4 w-4 text-palette-primary" />
+                영상 제목 <span className="text-red-600">*</span>
+              </label>
+              <input
+                autoComplete="off"
+                className="h-12 w-full rounded-2xl border border-palette-primary/15 bg-surface px-4 text-sm text-fg shadow-sm outline-none transition placeholder:text-fg-subtle/70 hover:border-palette-primary/30 focus:border-palette-primary focus:ring-4 focus:ring-palette-primary/10"
+                id="clip-title"
+                name="title"
+                placeholder="예: 3강"
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
 
-          <div>
-            <span className="block text-sm font-medium text-fg-subtle" id="clip-video-label">
-              영상 파일 <span className="text-red-600">*</span>
-            </span>
-            <p className="mt-0.5 text-xs text-fg-subtle">mp4 등 동영상 파일</p>
-            <input
-              ref={videoInputRef}
-              accept="video/*"
-              aria-labelledby="clip-video-label"
-              className="mt-2 block w-full cursor-pointer text-sm text-fg file:mr-3 file:rounded-lg file:border-0 file:bg-palette-accent/30 file:px-3 file:py-2 file:text-sm file:font-medium file:text-fg hover:file:bg-palette-accent/45"
-              name="videoFile"
-              type="file"
-              onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
-            />
-            {videoFile ? (
-              <p className="mt-1 text-xs text-fg-subtle">선택됨: {videoFile.name}</p>
-            ) : null}
-          </div>
+            <div className="rounded-2xl border border-palette-primary/10 bg-white/80 p-4 shadow-sm ring-1 ring-palette-primary/6">
+              <label className="mb-2 flex items-center gap-2 text-sm font-semibold text-fg" htmlFor="clip-description">
+                <FileText className="h-4 w-4 text-palette-primary" />
+                영상 설명 <span className="text-red-600">*</span>
+              </label>
+              <textarea
+                className="min-h-[120px] w-full resize-y rounded-2xl border border-palette-primary/15 bg-surface px-4 py-3 text-sm leading-6 text-fg shadow-sm outline-none transition placeholder:text-fg-subtle/70 hover:border-palette-primary/30 focus:border-palette-primary focus:ring-4 focus:ring-palette-primary/10"
+                id="clip-description"
+                name="description"
+                placeholder="이 영상에서 다루는 내용을 적어 주세요."
+                rows={4}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
 
-          <div>
-            <span className="block text-sm font-medium text-fg-subtle" id="clip-thumb-label">
-              썸네일 이미지 <span className="text-red-600">*</span>
-            </span>
-            <p className="mt-0.5 text-xs text-fg-subtle">목록에 표시될 이미지입니다.</p>
-            <input
-              ref={thumbInputRef}
-              accept="image/*"
-              aria-labelledby="clip-thumb-label"
-              className="mt-2 block w-full cursor-pointer text-sm text-fg file:mr-3 file:rounded-lg file:border-0 file:bg-palette-accent/30 file:px-3 file:py-2 file:text-sm file:font-medium file:text-fg hover:file:bg-palette-accent/45"
-              name="thumbnailFile"
-              type="file"
-              onChange={(e) => setThumbnailFile(e.target.files?.[0] ?? null)}
-            />
-            {thumbnailFile ? (
-              <p className="mt-1 text-xs text-fg-subtle">선택됨: {thumbnailFile.name}</p>
-            ) : null}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <div className="rounded-2xl border border-palette-primary/10 bg-white/80 p-4 shadow-sm ring-1 ring-palette-primary/6">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-fg" id="clip-video-label">
+                  <Video className="h-4 w-4 text-palette-primary" />
+                  영상 파일 <span className="text-red-600">*</span>
+                </div>
+                <p className="text-xs text-fg-subtle">mp4 등 동영상 파일을 업로드해 주세요.</p>
+
+                <label className="mt-3 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-palette-primary/20 bg-palette-accent/10 px-4 py-6 text-center transition hover:border-palette-primary/35 hover:bg-palette-accent/20">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                    <Video className="h-5 w-5" />
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-fg">
+                    영상 파일 선택
+                  </p>
+                  <p className="mt-1 text-xs text-fg-subtle">
+                    클릭해서 업로드하세요
+                  </p>
+                  <input
+                    ref={videoInputRef}
+                    accept="video/*"
+                    aria-labelledby="clip-video-label"
+                    className="sr-only"
+                    name="videoFile"
+                    type="file"
+                    onChange={(e) => setVideoFile(e.target.files?.[0] ?? null)}
+                  />
+                </label>
+
+                {videoFile ? (
+                  <div className="mt-3 rounded-xl border border-palette-primary/12 bg-surface px-3 py-2 text-sm text-fg">
+                    선택됨: <span className="font-medium">{videoFile.name}</span>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="rounded-2xl border border-palette-primary/10 bg-white/80 p-4 shadow-sm ring-1 ring-palette-primary/6">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-fg" id="clip-thumb-label">
+                  <ImagePlus className="h-4 w-4 text-palette-primary" />
+                  썸네일 이미지 <span className="text-red-600">*</span>
+                </div>
+                <p className="text-xs text-fg-subtle">목록에 표시될 이미지를 선택해 주세요.</p>
+
+                <label className="mt-3 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-palette-primary/20 bg-palette-accent/10 px-4 py-6 text-center transition hover:border-palette-primary/35 hover:bg-palette-accent/20">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                    <ImagePlus className="h-5 w-5" />
+                  </div>
+                  <p className="mt-3 text-sm font-semibold text-fg">
+                    썸네일 선택
+                  </p>
+                  <p className="mt-1 text-xs text-fg-subtle">
+                    클릭해서 이미지를 업로드하세요
+                  </p>
+                  <input
+                    ref={thumbInputRef}
+                    accept="image/*"
+                    aria-labelledby="clip-thumb-label"
+                    className="sr-only"
+                    name="thumbnailFile"
+                    type="file"
+                    onChange={(e) => setThumbnailFile(e.target.files?.[0] ?? null)}
+                  />
+                </label>
+
+                {thumbnailFile ? (
+                  <div className="mt-3 rounded-xl border border-palette-primary/12 bg-surface px-3 py-2 text-sm text-fg">
+                    선택됨: <span className="font-medium">{thumbnailFile.name}</span>
+                  </div>
+                ) : null}
+              </div>
+            </div>
           </div>
 
           {error ? (
-            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200" role="alert">
+            <p className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 shadow-sm" role="alert">
               {error}
             </p>
           ) : null}
 
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              className="rounded-lg border border-palette-primary/25 bg-surface px-4 py-2 text-sm font-medium text-fg hover:bg-palette-accent/15"
-              disabled={pending}
-              onClick={handleClose}
-            >
-              취소
-            </button>
+          <div className="flex flex-col-reverse gap-2 border-t border-palette-primary/10 pt-5 sm:flex-row sm:justify-end">
             <button
               type="submit"
-              className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90 disabled:opacity-60"
+              className="rounded-2xl bg-palette-primary px-5 py-3 text-sm font-semibold text-palette-white shadow-sm transition hover:bg-palette-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
               disabled={pending}
             >
               {pending ? '업로드 중…' : '등록'}
@@ -196,6 +250,18 @@ export const AddLectureClipModal = ({
           </div>
         </form>
       </div>
+      <style>
+        {`
+          .modal-scrollbar-hidden {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+
+          .modal-scrollbar-hidden::-webkit-scrollbar {
+            display: none;
+          }
+        `}
+      </style>
     </div>
   )
 }

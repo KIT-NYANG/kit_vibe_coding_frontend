@@ -87,7 +87,7 @@ export const CategoryPreviewGrid = ({
         ) : null}
         </div>
 
-          <div className="flex shrink-0 items-center gap-2">
+          <div className="flex shrink-0 items-center gap-3">
             {showSearchBar ? (
             <div className="flex items-center gap-2 rounded-lg border border-palette-primary/12 bg-white/80 px-3 py-1 shadow-sm">
               <input
@@ -100,7 +100,7 @@ export const CategoryPreviewGrid = ({
                   }
                 }}
                 placeholder="검색어를 입력해주세요"
-                className="w-32 bg-transparent text-sm text-fg placeholder:text-fg-subtle focus:outline-none sm:w-40"
+                className="w-64 bg-transparent text-sm text-fg placeholder:text-fg-subtle focus:outline-none sm:w-80"
               />
 
               <button
@@ -123,7 +123,7 @@ export const CategoryPreviewGrid = ({
           ) : null}
             {showLectureCount && !loading && !error && totalInCategory > 0 ? (
               <div className="inline-flex items-center gap-2 rounded-lg bg-palette-accent/20 px-3 py-2 text-sm font-semibold text-palette-primary">
-                <NotebookTabs aria-hidden className="h-4 w-4" strokeWidth={2} />
+                <NotebookTabs aria-hidden className="h-6 w-4" strokeWidth={2} />
                 <span>{totalInCategory}개의 강좌</span>
               </div>
             ) : null}

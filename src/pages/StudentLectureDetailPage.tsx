@@ -301,10 +301,12 @@ export const StudentLectureDetailPage = () => {
       enrollmentCta={enrollmentCta}
       enrollmentError={enrollError}
       onClipWatch={
-        fromMyPage
+        isEnrolled
           ? (clip) =>
               navigate(`/lecture/${lecture.id}/clip/${clip.id}/watch`, {
-                state: { fromMyPage: true } satisfies StudentLectureLocationState,
+                state: fromMyPage
+                  ? ({ fromMyPage: true } satisfies StudentLectureLocationState)
+                  : undefined,
               })
           : undefined
       }

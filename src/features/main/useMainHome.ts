@@ -111,7 +111,7 @@ export const useMainHome = (): UseMainHomeResult => {
         setFirst(true)
         setLast(true)
         setLecturesError(
-          e instanceof Error ? e.message : '강의 목록을 불러오지 못했습니다.',
+          e instanceof Error ? e.message : '강좌 목록을 불러오지 못했습니다.',
         )
       } finally {
         setLecturesLoading(false)

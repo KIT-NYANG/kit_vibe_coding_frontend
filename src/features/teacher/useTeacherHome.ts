@@ -79,7 +79,7 @@ export const useTeacherHome = (): UseTeacherHomeResult => {
       setFirst(res.first)
       setLast(res.last)
     } catch (e) {
-      setError(e instanceof Error ? e.message : '강의 목록을 불러오지 못했습니다.')
+      setError(e instanceof Error ? e.message : '강좌 목록을 불러오지 못했습니다.')
     } finally {
       setLoading(false)
     }
