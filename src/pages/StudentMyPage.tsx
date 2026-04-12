@@ -41,15 +41,15 @@ export const StudentMyPage = () => {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-xl font-bold text-fg sm:text-2xl">마이페이지</h1>
-          <p className="mt-1 text-sm text-fg-subtle">나의 강좌 목록입니다.</p>
+          <p className="mt-1 text-base text-fg-subtle">나의 강좌 목록입니다.</p>
         </div>
         <button
           type="button"
-          className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
+          className="inline-flex self-start gap-2 text-base font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
           onClick={() => navigate('/')}
         >
           ← 홈
-          <House aria-hidden className="h-5 w-6" strokeWidth={2} />
+          <House aria-hidden className="h-6 w-7" strokeWidth={2} />
         </button>
       </div>
 

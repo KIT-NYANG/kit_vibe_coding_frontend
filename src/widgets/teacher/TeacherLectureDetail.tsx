@@ -82,15 +82,15 @@ export const TeacherLectureDetail = ({
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
         type="button"
-        className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
+        className="inline-flex self-start gap-2 text-base font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
         onClick={onBack}
       >
         ← 업로드한 강좌 목록
-        <LibraryBig aria-hidden className="h-5 w-6" strokeWidth={2} />
+        <LibraryBig aria-hidden className="h-6 w-7" strokeWidth={2} />
       </button>
 
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="mx-auto max-w-6xl mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <h1 className="text-2xl font-bold tracking-tight text-fg sm:text-3xl">{lecture.title}</h1>
           <button
             type="button"
@@ -123,11 +123,11 @@ export const TeacherLectureDetail = ({
         <div className="mx-auto max-w-6xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/5 bg-palette-accent/20 px-4 py-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                <Tag className="h-4 w-4" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <Tag className="h-6 w-6" />
               </div>
               <div className="min-w-0">
-                <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+                <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                   카테고리
                 </p>
                 <p className="mt-1 text-medium font-medium text-fg">
@@ -137,11 +137,11 @@ export const TeacherLectureDetail = ({
             </div>
 
             <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-slate-50/100 px-4 py-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                <CalendarClock className="h-4 w-4" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <CalendarClock className="h-6 w-6" />
               </div>
               <div className="min-w-0">
-                <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+                <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                   업로드일
                 </p>
                 <p className="mt-1 text-medium font-medium text-fg">
@@ -152,11 +152,11 @@ export const TeacherLectureDetail = ({
           </div>
 
           <div className="mt-3 flex items-start gap-3 rounded-2xl border border-palette-primary/5 bg-palette-accent/14 px-4 py-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-              <FileText className="h-4 w-4" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+              <FileText className="h-6 w-6" />
             </div>
             <div className="min-w-0">
-              <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+              <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                 설명
               </p>
               <p className="mt-1 text-medium leading-relaxed text-fg">
@@ -267,13 +267,13 @@ export const TeacherLectureDetail = ({
                       </span>
                     </div>
                     <div className="flex min-w-0 flex-1 flex-col justify-center">
-                      <div className="flex min-w-0 items-start gap-2">
-                        <p className="line-clamp-2 min-w-0 flex-1 text-sm font-semibold leading-5 text-fg">
+                      <div className="flex w-full min-w-0 items-center justify-between gap-3">
+                        <p className="truncate min-w-0 flex-1 text-sm font-semibold leading-5 text-fg">
                           {clip.title}
                         </p>
                         {clip.sttStatus ? (
                           <span
-                            className={`shrink-0 rounded-lg border px-2 py-0.5 text-[10px] font-semibold ${getSttStatusBadgeClass(clip.sttStatus)}`}
+                            className={`shrink-0 rounded-lg border px-4 py-1.5 text-[12px] font-semibold ${getSttStatusBadgeClass(clip.sttStatus)}`}
                           >
                             {formatSttStatusBadge(clip.sttStatus)}
                           </span>

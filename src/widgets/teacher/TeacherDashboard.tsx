@@ -61,34 +61,45 @@ export const TeacherDashboard = ({
     <section className="w-full">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:gap-4">
         <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                    <BookType className="h-6 w-6" />
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <BookType className="h-6 w-6" />
+              </div>
+
+              <div>
+                <h2 className="text-medium font-semibold text-fg">
+                    업로드한 강좌{' '}
+                    <span className="ml-1 font-medium text-palette-primary">
+                      ({loading ? '…' : `${totalLectures}개`})
+                    </span>
+                </h2>
+                <p
+                      className="preview-bounce-text mt-0.5 text-sm font-medium text-palette-primary/90"
+                      aria-label="업로드한 강좌를 조건별로 찾아보세요!"
+                    >
+                      {'업로드한 강좌를 조건별로 찾아보세요!'.split('').map((char, index) => (
+                        <span
+                          key={`${char}-${index}`}
+                          className="preview-bounce-letter"
+                          style={{ animationDelay: `${index * 0.05}s` }}
+                          aria-hidden="true"
+                        >
+                          {char === ' ' ? '\u00A0' : char}
+                        </span>
+                      ))}
+                    </p>
+              </div>
             </div>
 
-            <div>
-              <h2 className="text-medium font-semibold text-fg">
-                  업로드한 강좌{' '}
-                  <span className="ml-1 font-medium text-palette-primary">
-                    ({loading ? '…' : `${totalLectures}개`})
-                  </span>
-              </h2>
-              <p
-                    className="preview-bounce-text mt-0.5 text-sm font-medium text-palette-primary/90"
-                    aria-label="업로드한 강좌를 조건별로 찾아보세요!"
-                  >
-                    {'업로드한 강좌를 조건별로 찾아보세요!'.split('').map((char, index) => (
-                      <span
-                        key={`${char}-${index}`}
-                        className="preview-bounce-letter"
-                        style={{ animationDelay: `${index * 0.05}s` }}
-                        aria-hidden="true"
-                      >
-                        {char === ' ' ? '\u00A0' : char}
-                      </span>
-                    ))}
-                  </p>
-            </div>
+            <button
+              type="button"
+              aria-label="강좌 업로드"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-surface text-palette-primary shadow-sm ring-1 ring-palette-primary/15 transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+              onClick={onUploadClick}
+            >
+              <Upload aria-hidden className="h-6 w-6" strokeWidth={2} />
+            </button>
           </div>
 
           <div className="mt-5 flex flex-col gap-3 lg:flex-row lg:items-end">
@@ -284,17 +295,6 @@ export const TeacherDashboard = ({
             ) : null}
           </div>
         </section>
-
-        <div className="flex shrink-0 justify-end sm:items-end sm:pb-1">
-          <button
-            type="button"
-            aria-label="강좌 업로드"
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-surface text-palette-primary shadow-sm ring-1 ring-palette-primary/15 transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
-            onClick={onUploadClick}
-          >
-            <Upload aria-hidden className="h-6 w-6" strokeWidth={2} />
-          </button>
-        </div>
       </div>
 
       <style>

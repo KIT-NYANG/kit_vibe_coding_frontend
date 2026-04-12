@@ -115,11 +115,11 @@ export const StudentLectureClipWatchPage = () => {
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
         type="button"
-        className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
+        className="inline-flex self-start gap-2 text-base font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
         onClick={() => navigate(lectureDetailPath, { state: backState })}
       >
         ← 강좌 상세
-        <BookType aria-hidden className="h-5 w-6" strokeWidth={2} />
+        <BookType aria-hidden className="h-6 w-7" strokeWidth={2} />
       </button>
 
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">

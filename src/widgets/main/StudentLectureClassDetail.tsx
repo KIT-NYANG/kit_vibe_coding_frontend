@@ -80,15 +80,15 @@ export const StudentLectureClassDetail = ({
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
         type="button"
-        className="inline-flex gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+        className="inline-flex gap-2 text-base font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
         onClick={onBack}
       >
         {backLabel}
-        <House aria-hidden className="h-5 w-6" strokeWidth={2} />
+        <House aria-hidden className="h-6 w-7" strokeWidth={2} />
       </button>
 
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
-        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto max-w-6xl mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <h1 className="min-w-0 text-2xl font-bold tracking-tight text-fg sm:text-3xl">
             {lecture.title}
           </h1>
@@ -163,11 +163,11 @@ export const StudentLectureClassDetail = ({
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {lecture.teacherName ? (
               <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-palette-accent/25 px-4 py-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                  <UserRound className="h-4 w-4" />
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                  <UserRound className="h-6 w-6" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+                  <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                     강사
                   </p>
                   <p className="mt-1 text-medium font-medium text-fg">
@@ -180,11 +180,11 @@ export const StudentLectureClassDetail = ({
             )}
 
             <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-palette-accent/15 px-4 py-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                <Tag className="h-4 w-4" />
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <Tag className="h-6 w-6" />
               </div>
               <div className="min-w-0">
-                <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+                <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                   카테고리
                 </p>
                 <p className="mt-1 text-medium font-medium text-fg">
@@ -195,11 +195,11 @@ export const StudentLectureClassDetail = ({
           </div>
 
           <div className="mt-3 flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-slate-50/100 px-4 py-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-              <FileText className="h-4 w-4" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+              <FileText className="h-6 w-6" />
             </div>
             <div className="min-w-0">
-              <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+              <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                 설명
               </p>
               <p className="mt-1 text-medium leading-relaxed text-fg">
@@ -211,11 +211,11 @@ export const StudentLectureClassDetail = ({
           </div>
 
           <div className="mt-3 flex items-start gap-3 rounded-2xl border border-palette-primary/10 bg-palette-accent/20 px-4 py-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-              <CalendarClock className="h-4 w-4" />
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+              <CalendarClock className="h-6 w-6" />
             </div>
             <div className="min-w-0">
-              <p className="text-xl font-semibold tracking-wide text-fg-subtle">
+              <p className="text-lg font-semibold tracking-wide text-fg-subtle">
                 업로드일
               </p>
               <p className="mt-1 text-medium font-medium text-fg">
