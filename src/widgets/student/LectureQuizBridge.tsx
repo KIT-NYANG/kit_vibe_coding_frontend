@@ -172,7 +172,7 @@ export const LectureQuizBridge = ({ quizzes }: { quizzes: LecturePlaybackQuizDto
             
               <div className="px-5 py-5 sm:px-6 sm:py-6">
                 <div className="rounded-2xl border border-rose-100 bg-rose-100 px-4 py-4 text-center">
-                  <p className="text-sm leading-7 text-fg">{active.explanation}</p>
+                  <p className="text-base font-semibold leading-7 text-fg sm:text-lg">{active.explanation}</p>
                 </div>
 
             {active.supplementalDescription ? (
