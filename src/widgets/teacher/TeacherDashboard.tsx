@@ -186,7 +186,7 @@ export const TeacherDashboard = ({
               <>
                 <button
                   type="button"
-                  aria-label="이전 강의"
+                  aria-label="이전 강좌"
                   className={`absolute left-0 top-1/2 -translate-y-1/2 ${iconBtnClass}`}
                   disabled={!canGoPrev}
                   onClick={onPrev}
@@ -195,7 +195,7 @@ export const TeacherDashboard = ({
                 </button>
                 <button
                   type="button"
-                  aria-label="다음 강의"
+                  aria-label="다음 강좌"
                   className={`absolute right-0 top-1/2 -translate-y-1/2 ${iconBtnClass}`}
                   disabled={!canGoNext}
                   onClick={onNext}
@@ -245,7 +245,7 @@ export const TeacherDashboard = ({
               ))}
             </ul>
             {!loading && totalLectures === 0 && !error ? (
-              <p className="mt-4 text-center text-sm text-fg-subtle">등록된 강의가 없습니다.</p>
+              <p className="mt-4 text-center text-sm text-fg-subtle">등록된 강좌가 없습니다.</p>
             ) : null}
 
             {showArrows && !loading && !error ? (
@@ -288,7 +288,7 @@ export const TeacherDashboard = ({
         <div className="flex shrink-0 justify-end sm:items-end sm:pb-1">
           <button
             type="button"
-            aria-label="강의 업로드"
+            aria-label="강좌 업로드"
             className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-surface text-palette-primary shadow-sm ring-1 ring-palette-primary/15 transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
             onClick={onUploadClick}
           >

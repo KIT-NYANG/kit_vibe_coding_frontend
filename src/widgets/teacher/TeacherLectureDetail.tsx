@@ -3,6 +3,7 @@ import type { TeacherLectureCard } from '../../entities/teacher/types'
 import type { TeacherLectureClipRow } from '../../features/teacher/mapLectureClipToRow'
 import { formatSttStatusBadge } from '../../features/teacher/sttStatusLabel'
 import { getLectureCategoryLabel } from '../../shared/lib/lectureCategories'
+import { LibraryBig } from 'lucide-react'
 
 const formatUploadDate = (iso: string): string => {
   try {
@@ -14,6 +15,19 @@ const formatUploadDate = (iso: string): string => {
     }).format(d)
   } catch {
     return iso
+  }
+}
+
+const getSttStatusBadgeClass = (status: string) => {
+  switch (status) {
+    case 'COMPLETED':
+      return 'border-emerald-200 bg-emerald-50 text-emerald-700'
+    case 'PROCESSING':
+      return 'border-amber-200 bg-amber-50 text-amber-700'
+    case 'FAILED':
+      return 'border-red-200 bg-red-50 text-red-700'
+    default:
+      return 'border-palette-primary/12 bg-palette-accent/35 text-fg-subtle'
   }
 }
 
@@ -68,10 +82,11 @@ export const TeacherLectureDetail = ({
     <div className="space-y-6">
       <button
         type="button"
-        className="text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary"
+        className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
         onClick={onBack}
       >
         ← 업로드한 강좌 목록
+        <LibraryBig aria-hidden className="h-5 w-6" strokeWidth={2} />
       </button>
 
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
@@ -89,24 +104,23 @@ export const TeacherLectureDetail = ({
           </button>
         </div>
 
-        <div className="mx-auto max-w-2xl overflow-hidden rounded-2xl bg-surface shadow-md ring-1 ring-palette-primary/12">
-          <div className="aspect-video w-full overflow-hidden bg-palette-accent/25">
+        <div className="mx-auto max-w-5xl overflow-hidden rounded-2xl bg-surface shadow-md ring-1 ring-palette-primary/12">
+          <div className="group relative aspect-video w-full overflow-hidden bg-gradient-to-br from-palette-accent/30 via-white to-palette-primary/10">
             <img
               alt={lecture.thumbnailAlt}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.02]"
               decoding="async"
               src={lecture.thumbnailSrc}
               onError={(e) => {
                 e.currentTarget.src = '/thumbnail-placeholder.svg'
               }}
             />
-          </div>
-          <div className="border-t border-palette-primary/10 bg-surface px-4 py-4 sm:px-6">
-            <p className="text-center text-lg font-semibold text-fg">{lecture.title}</p>
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
+            <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-white/20" />
           </div>
         </div>
 
-        <div className="mx-auto mt-8 max-w-2xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
+        <div className="mx-auto mt-8 max-w-5xl rounded-[24px] border border-palette-primary/12 bg-white/80 p-4 shadow-sm backdrop-blur-sm sm:p-5">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex items-start gap-3 rounded-2xl border border-palette-primary/5 bg-palette-accent/20 px-4 py-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
@@ -159,7 +173,21 @@ export const TeacherLectureDetail = ({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-fg">강의 영상</h2>
-            <p className="mt-1 text-xs text-fg-subtle">이 강좌에 등록된 영상 목록입니다.</p>
+            <p 
+              className="preview-bounce-text mt-0.5 text-sm font-medium text-palette-primary/90"
+              aria-label="이 강좌에 등록된 강의 영상 목록입니다."
+            >
+              {'이 강좌에 등록된 강의 영상 목록입니다.'.split('').map((char, index) => (
+                <span
+                  key={`${char}-${index}`}
+                  className="preview-bounce-letter"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                  aria-hidden="true"
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </span>
+              ))}
+            </p>
           </div>
           <button
             type="button"
@@ -215,44 +243,51 @@ export const TeacherLectureDetail = ({
                   </button>
                 </>
               ) : null}
-              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {clips.map((clip) => (
                 <li key={clip.id}>
                   <button
                     type="button"
-                    className="flex w-full gap-3 rounded-xl bg-surface p-3 text-left ring-1 ring-palette-primary/12 transition hover:ring-palette-primary/40 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
+                    className="group flex w-full gap-3 rounded-2xl border border-palette-primary/10 bg-white/85 p-3.5 text-left shadow-sm ring-1 ring-palette-primary/8 transition duration-200 hover:-translate-y-0.5 hover:shadow-md hover:ring-palette-primary/25 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
                     onClick={() => onClipClick(clip)}
                   >
-                    <div className="relative h-[4.5rem] w-28 shrink-0 overflow-hidden rounded-lg bg-palette-accent/25">
+                    <div className="relative h-[5rem] w-32 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-palette-accent/35 via-white to-palette-primary/10">
                       <img
                         alt={`${clip.title} 썸네일`}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
                         loading="lazy"
                         src={clip.thumbnailSrc}
                         onError={(e) => {
                           e.currentTarget.src = '/thumbnail-placeholder.svg'
                         }}
                       />
-                      <span className="absolute bottom-1 right-1 rounded bg-palette-primary/90 px-1.5 py-0.5 text-[10px] font-medium text-palette-white">
+                      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/15 via-transparent to-transparent" />
+                      <span className="absolute bottom-1.5 right-1.5 rounded-md bg-black/65 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
                         {clip.durationLabel}
                       </span>
                     </div>
-                    <div className="flex min-w-0 flex-1 flex-col justify-center gap-1">
-                      <div className="flex min-w-0 flex-wrap items-center gap-2">
-                        <p className="line-clamp-2 min-w-0 flex-1 text-sm font-semibold text-fg">
+                    <div className="flex min-w-0 flex-1 flex-col justify-center">
+                      <div className="flex min-w-0 items-start gap-2">
+                        <p className="line-clamp-2 min-w-0 flex-1 text-sm font-semibold leading-5 text-fg">
                           {clip.title}
                         </p>
                         {clip.sttStatus ? (
-                          <span className="shrink-0 rounded bg-palette-accent/40 px-1.5 py-0.5 text-[10px] font-medium text-fg-subtle">
+                          <span
+                            className={`shrink-0 rounded-lg border px-2 py-0.5 text-[10px] font-semibold ${getSttStatusBadgeClass(clip.sttStatus)}`}
+                          >
                             {formatSttStatusBadge(clip.sttStatus)}
                           </span>
                         ) : null}
                       </div>
                       {clip.description ? (
-                        <p className="line-clamp-2 text-xs leading-snug text-fg-subtle">
+                        <p className="mt-1.5 line-clamp-2 text-xs leading-5 text-fg-subtle">
                           {clip.description}
                         </p>
-                      ) : null}
+                      ) : (
+                        <p className="mt-1.5 text-xs text-fg-subtle/70">
+                          설명이 없습니다.
+                        </p>
+                      )}
                     </div>
                   </button>
                 </li>
@@ -296,6 +331,36 @@ export const TeacherLectureDetail = ({
           </div>
         )}
       </section>
+
+      <style>
+        {`
+          .preview-bounce-text {
+            line-height: 1.5;
+          }
+
+          .preview-bounce-letter {
+            position: relative;
+            top: 0;
+            display: inline-block;
+            animation: previewBounce 0.7s ease-in-out infinite alternate;
+            text-shadow:
+              0 1px 0 rgba(203, 213, 225, 0.55),
+              0 4px 10px rgba(15, 23, 42, 0.08);
+          }
+
+          @keyframes previewBounce {
+            0% {
+              top: 0;
+            }
+            100% {
+              top: -3px;
+              text-shadow:
+                0 1px 0 rgba(203, 213, 225, 0.6),
+                0 8px 12px rgba(15, 23, 42, 0.12);
+            }
+          }
+        `}
+      </style>
     </div>
   )
 }

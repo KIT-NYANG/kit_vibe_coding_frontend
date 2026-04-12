@@ -40,7 +40,7 @@ export const CreateLectureModal = ({ open, onClose, onSubmit }: CreateLectureMod
     const trimmedDescription = description.trim()
 
     if (!trimmedTitle) {
-      setError('강의 제목을 입력해 주세요.')
+      setError('강좌 제목을 입력해 주세요.')
       return
     }
     if (!trimmedCategory) {
@@ -48,7 +48,7 @@ export const CreateLectureModal = ({ open, onClose, onSubmit }: CreateLectureMod
       return
     }
     if (!trimmedDescription) {
-      setError('강의 설명을 입력해 주세요.')
+      setError('강좌의 설명을 입력해 주세요.')
       return
     }
     if (!thumbnailFile) {
@@ -67,7 +67,7 @@ export const CreateLectureModal = ({ open, onClose, onSubmit }: CreateLectureMod
       })
       onClose()
     } catch (err) {
-      setError(err instanceof Error ? err.message : '강의를 등록하지 못했습니다.')
+      setError(err instanceof Error ? err.message : '강좌를 등록하지 못했습니다.')
     } finally {
       setPending(false)
     }
@@ -94,14 +94,14 @@ export const CreateLectureModal = ({ open, onClose, onSubmit }: CreateLectureMod
       />
       <div className="relative z-10 max-h-[min(90vh,720px)] w-full max-w-lg overflow-y-auto rounded-2xl bg-surface p-6 shadow-xl ring-1 ring-palette-primary/15">
         <h2 id={titleId} className="text-lg font-semibold text-fg">
-          강의 등록
+          강좌 등록
         </h2>
-        <p className="mt-1 text-sm text-fg-subtle">강의 정보와 썸네일 이미지를 등록해 주세요.</p>
+        <p className="mt-1 text-sm text-fg-subtle">강좌 정보와 썸네일 이미지를 등록해 주세요.</p>
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-sm font-medium text-fg-subtle" htmlFor="lecture-title">
-              강의 제목 <span className="text-red-600">*</span>
+              강좌 제목 <span className="text-red-600">*</span>
             </label>
             <input
               autoComplete="off"
@@ -137,13 +137,13 @@ export const CreateLectureModal = ({ open, onClose, onSubmit }: CreateLectureMod
 
           <div>
             <label className="block text-sm font-medium text-fg-subtle" htmlFor="lecture-description">
-              강의 설명 <span className="text-red-600">*</span>
+              강좌 설명 <span className="text-red-600">*</span>
             </label>
             <textarea
               className="mt-1 min-h-[120px] w-full resize-y rounded-lg border border-palette-primary/20 px-3 py-2 text-sm text-fg shadow-sm focus:border-palette-primary focus:outline-none focus:ring-1 focus:ring-palette-primary"
               id="lecture-description"
               name="description"
-              placeholder="강의 목표, 대상 수강생, 커리큘럼 요약 등을 적어 주세요."
+              placeholder="강좌 목표, 대상 수강생, 커리큘럼 요약 등을 적어 주세요."
               rows={5}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
