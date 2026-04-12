@@ -1,0 +1,77 @@
+
+
+name: Deploy frontend to GCP
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: deploy-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      PROJECT_ID: ${{ vars.GCP_PROJECT_ID }}
+      REGION: ${{ vars.GCP_REGION }}
+      AR_REPOSITORY: ${{ vars.AR_REPOSITORY }}
+      AR_IMAGE_NAME: ${{ vars.AR_IMAGE_NAME }}
+      CLOUD_RUN_SERVICE: ${{ vars.CLOUD_RUN_SERVICE }}
+      VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required variables
+        run: |
+          err=0
+          [ -z "$PROJECT_ID" ] && echo "::error::Set variable GCP_PROJECT_ID" && err=1
+          [ -z "$REGION" ] && echo "::error::Set variable GCP_REGION" && err=1
+          [ -z "$AR_REPOSITORY" ] && echo "::error::Set variable AR_REPOSITORY" && err=1
+          [ -z "$AR_IMAGE_NAME" ] && echo "::error::Set variable AR_IMAGE_NAME" && err=1
+          [ -z "$CLOUD_RUN_SERVICE" ] && echo "::error::Set variable CLOUD_RUN_SERVICE" && err=1
+          [ -z "$VITE_API_BASE_URL" ] && echo "::error::Set variable VITE_API_BASE_URL" && err=1
+          exit $err
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker "${REGION}-docker.pkg.dev" --quiet
+
+      - name: Build and push image
+        run: |
+          IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPOSITORY}/${AR_IMAGE_NAME}:${GITHUB_SHA}"
+          docker build \
+            --build-arg "VITE_API_BASE_URL=${VITE_API_BASE_URL}" \
+            --build-arg NGINX_CONF=cloudrun.conf \
+            -t "${IMAGE}" \
+            -t "${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPOSITORY}/${AR_IMAGE_NAME}:latest" \
+            .
+          docker push "${IMAGE}"
+          docker push "${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPOSITORY}/${AR_IMAGE_NAME}:latest"
+          echo "IMAGE=${IMAGE}" >> "$GITHUB_ENV"
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy "${CLOUD_RUN_SERVICE}" \
+            --image "${IMAGE}" \
+            --region "${REGION}" \
+            --platform managed \
+            --port 80 \
+            --allow-unauthenticated \
+            --quiet

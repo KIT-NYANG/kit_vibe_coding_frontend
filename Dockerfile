@@ -10,12 +10,17 @@ RUN npm ci --legacy-peer-deps
 
 COPY . .
 
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=${VITE_API_BASE_URL}
+
 RUN npm run build
 
 # ---- static serve ----
+# NGINX_CONF: docker-compose(같은 네트워크) = default.conf, Cloud Run 단독 = cloudrun.conf
 FROM nginx:1.27-alpine AS runner
 
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
+ARG NGINX_CONF=default.conf
+COPY docker/nginx/${NGINX_CONF} /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 EXPOSE 80
