@@ -40,7 +40,7 @@ export const MainLayout = () => {
         onOpenLogin={() => setLoginModalOpen(true)}
         onOpenSignup={() => setSignupModalOpen(true)}
       />
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+      <main className="mx-auto px-4 py-6 sm:px-6">
         <Outlet context={outletContext} />
       </main>
 

@@ -41,26 +41,26 @@ export const StudentMyPage = () => {
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h1 className="text-xl font-bold text-fg sm:text-2xl">마이페이지</h1>
-          <p className="mt-1 text-sm text-fg-subtle">나의 강좌 목록입니다.</p>
+          <p className="mt-1 text-base text-fg-subtle">나의 강좌 목록입니다.</p>
         </div>
         <button
           type="button"
-          className="inline-flex self-start gap-2 text-sm font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
+          className="inline-flex self-start gap-2 text-base font-medium text-fg-subtle underline-offset-4 transition hover:text-palette-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary sm:self-auto"
           onClick={() => navigate('/')}
         >
           ← 홈
-          <House aria-hidden className="h-5 w-6" strokeWidth={2} />
+          <House aria-hidden className="h-6 w-7" strokeWidth={2} />
         </button>
       </div>
 
       <section className="rounded-3xl border border-palette-primary/10 bg-gradient-to-br from-palette-accent/20 via-white to-palette-primary/5 p-5 shadow-sm backdrop-blur-sm sm:p-6">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
-                <NotepadText className="h-4 w-4" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-palette-primary/10 text-palette-primary">
+                <NotepadText className="h-6 w-6" />
           </div>
 
               <div>
-                <h2 className="text-sm font-semibold text-fg">강좌 목록{' '}
+                <h2 className="text-medium font-semibold text-fg">강좌 목록{' '}
                   <span className="ml-1 font-medium text-palette-primary">
                       ({loading ? '…' : `${totalLectures}개의 강좌 수강 중`})
                     </span>
