@@ -147,16 +147,12 @@ export const TeacherLectureClipWatchPage = () => {
             </p>
           </div>
 
-<<<<<<< HEAD
-        <LectureVideoPlayer src={videoSrc} title={data.title} />
-=======
           <LectureVideoPlayer
             src={videoSrc}
             title={data.title}
             teacherGuides={data.analysis?.teacherGuides}
           />
         </div>
->>>>>>> 882dfee0c99492f82ab31430a34aedf3e28832cd
       </section>
     </div>
   )
