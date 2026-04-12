@@ -182,3 +182,10 @@ export interface LecturePlaybackLogSavedDto {
   lastPositionSec: number
   message: string
 }
+
+/** GET /api/lectures/:lectureId/logs/last-position — 마지막 시청 위치 */
+export interface LectureLastPositionDto {
+  lectureId: number
+  lastPositionSec: number
+  sessionId: string | null
+}
