@@ -1,0 +1,128 @@
+import { useId, useState, type SubmitEvent } from 'react'
+import { LockKeyholeOpen, Mail } from 'lucide-react'
+
+interface LoginModalProps {
+  open: boolean
+  onClose: () => void
+  onSubmit: (email: string, password: string) => Promise<void>
+  /** 세션 만료 등으로 자동으로 열릴 때 상단 안내 */
+  notice?: string | null
+}
+
+export const LoginModal = ({ open, onClose, onSubmit, notice }: LoginModalProps) => {
+  const titleId = useId()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
+
+  if (!open) return null
+
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError(null)
+    setPending(true)
+    try {
+      await onSubmit(email.trim(), password)
+      setEmail('')
+      setPassword('')
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '로그인에 실패했습니다.')
+    } finally {
+      setPending(false)
+    }
+  }
+
+  return (
+    <div
+      aria-labelledby={titleId}
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+    >
+      <button
+        type="button"
+        aria-label="닫기"
+        className="absolute inset-0 bg-palette-primary/40"
+        onClick={onClose}
+      />
+      <div className="relative z-10 w-full max-w-md rounded-2xl bg-surface p-6 shadow-xl ring-1 ring-palette-primary/15">
+        <h2 id={titleId} className="text-lg font-semibold text-fg">
+          로그인
+        </h2>
+        <p className="mt-1 text-sm text-fg-subtle">이메일과 비밀번호를 입력해 주세요.</p>
+
+        {notice ? (
+          <p
+            className="mt-4 rounded-lg bg-palette-accent/20 px-3 py-2 text-sm text-fg ring-1 ring-palette-primary/20"
+            role="status"
+          >
+            {notice}
+          </p>
+        ) : null}
+
+        <form className={`space-y-4 ${notice ? 'mt-4' : 'mt-6'}`} onSubmit={handleSubmit}>
+          <div>
+            <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <Mail aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
+                <input
+                  autoComplete="email"
+                  className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
+                  id="login-email"
+                  name="email"
+                  required
+                  type="email"
+                  placeholder="이메일을 입력해 주세요"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="mt-1 flex overflow-hidden rounded-lg border border-palette-primary/20 bg-white shadow-sm focus-within:ring-2 focus-within:ring-palette-primary/30">
+              <span className="inline-flex items-center border-r border-palette-primary/15 bg-surface px-3 text-palette-primary">
+                <LockKeyholeOpen aria-hidden className="h-4 w-4" strokeWidth={2} />
+              </span>
+            <input
+              autoComplete="current-password"
+              className="w-full bg-transparent px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none"
+              id="login-password"
+              name="password"
+              required
+              type="password"
+              placeholder="비밀번호를 입력해 주세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+          {error ? (
+            <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200" role="alert">
+              {error}
+            </p>
+          ) : null}
+
+          <div className="flex justify-end gap-2 pt-2">
+            <button
+              type="button"
+              className="rounded-lg border border-palette-primary/25 bg-surface px-4 py-2 text-sm font-medium text-fg hover:bg-palette-accent/15"
+              disabled={pending}
+              onClick={onClose}
+            >
+              취소
+            </button>
+            <button
+              type="submit"
+              className="rounded-lg bg-palette-primary px-4 py-2 text-sm font-medium text-palette-white hover:bg-palette-primary/90 disabled:opacity-60"
+              disabled={pending}
+            >
+              {pending ? '처리 중…' : '로그인'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}

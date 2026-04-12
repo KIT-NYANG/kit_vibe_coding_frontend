@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+/* 원시 팔레트 — CSS 변수로도 노출 (런타임·인라인 스타일용) */
+:root {
+  --palette-black: #000000;
+  --palette-white: #ffffff;
+  --palette-primary: #010f62;
+  --palette-accent: #85b2db;
+  --palette-muted: #293447;
+  /* 시맨틱 */
+  --color-fg: var(--palette-black);
+  --color-fg-subtle: var(--palette-muted);
+  --color-surface: var(--palette-white);
+  /* 페이지 배경: 악센트를 살짝 섞은 라이트 톤 */
+  --color-canvas: #eef3f9;
+}
+
+@theme {
+  /* Tailwind 유틸: bg-palette-primary, text-fg, text-fg-subtle 등 */
+  --color-palette-black: #000000;
+  --color-palette-white: #ffffff;
+  --color-palette-primary: #010f62;
+  --color-palette-accent: #85b2db;
+  --color-palette-muted: #293447;
+  --color-fg: #000000;
+  --color-fg-subtle: #293447;
+  --color-surface: #ffffff;
+  --color-canvas: #eef3f9;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--color-canvas);
+  color: var(--color-fg);
+}
