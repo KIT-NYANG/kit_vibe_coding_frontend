@@ -25,7 +25,7 @@ export function resolveApiAssetUrl(pathOrUrl: string | null | undefined): string
   if (!trimmed) return ''
 
   if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) {
-    return encodeURI(trimmed)
+    return trimmed
   }
 
   const path = trimmed.startsWith('/') ? trimmed : `/${trimmed}`
