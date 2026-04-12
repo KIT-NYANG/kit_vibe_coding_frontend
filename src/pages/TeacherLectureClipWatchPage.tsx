@@ -80,6 +80,7 @@ export const TeacherLectureClipWatchPage = () => {
   }
 
   const videoSrc = resolveApiAssetUrl(data.videoUrl)
+  
   const backPath = lectureClassId ? `/teacher/lecture/${lectureClassId}` : '/'
 
   const handleDelete = async () => {
