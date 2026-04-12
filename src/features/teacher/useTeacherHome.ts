@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { TeacherHomeModel, TeacherLectureCard, TeacherLectureCreatePayload } from '../../entities/teacher/types'
-import { getLectureClasses, postLectureClass } from '../../shared/api/lectureApi'
+import { getMyLectureClasses, postLectureClass } from '../../shared/api/lectureApi'
 import { mapLectureClassToCard } from './mapLectureClassToCard'
 
 const PAGE_SIZE = 10
@@ -66,7 +66,7 @@ export const useTeacherHome = (): UseTeacherHomeResult => {
     setLoading(true)
     setError(null)
     try {
-      const res = await getLectureClasses({
+      const res = await getMyLectureClasses({
         page: nextPage,
         size: PAGE_SIZE,
         category: category.trim() || undefined,
