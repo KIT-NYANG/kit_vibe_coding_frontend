@@ -38,7 +38,6 @@ const getErrorMessage = (error: unknown): string => {
 
 /**
  * GET /api/lecture-class
- * 로그인한 강사 본인이 업로드한 강좌 목록(페이지네이션)입니다.
  * `category` 쿼리는 고정 코드만 허용: BACKEND, FRONTEND, AI, INFRA, DATABASE, DEVOPS, CS
  */
 export const getLectureClasses = async (
@@ -53,6 +52,40 @@ export const getLectureClasses = async (
   if (kw) search.set('keyword', kw)
   const qs = search.toString()
   const url = qs ? `/api/lecture-class?${qs}` : '/api/lecture-class'
+  try {
+    const { data } = await axiosInstance.get<ApiEnvelope<LectureClassPageDto>>(url)
+    if (!isApiSuccessCode(data.code) || data.data === null) {
+      throw new Error(data.message || '강좌 목록을 불러오지 못했습니다.')
+    }
+    return data.data
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(getErrorMessage(error))
+    }
+    if (error instanceof Error) {
+      throw error
+    }
+    throw new Error('강좌 목록을 불러오지 못했습니다.')
+  }
+}
+
+/**
+ * GET /api/lecture-class/my
+ * 로그인한 강사 본인이 업로드한 강좌 목록(페이지네이션).
+ * `category`·`keyword` 쿼리는 선택(백엔드와 동일 규칙).
+ */
+export const getMyLectureClasses = async (
+  params: GetLectureClassesParams = {},
+): Promise<LectureClassPageDto> => {
+  const search = new URLSearchParams()
+  if (params.page !== undefined) search.set('page', String(params.page))
+  if (params.size !== undefined) search.set('size', String(params.size))
+  const cat = params.category?.trim()
+  const kw = params.keyword?.trim()
+  if (cat) search.set('category', cat)
+  if (kw) search.set('keyword', kw)
+  const qs = search.toString()
+  const url = qs ? `/api/lecture-class/my?${qs}` : '/api/lecture-class/my'
   try {
     const { data } = await axiosInstance.get<ApiEnvelope<LectureClassPageDto>>(url)
     if (!isApiSuccessCode(data.code) || data.data === null) {
