@@ -130,11 +130,7 @@ export const TeacherLectureClipWatchPage = () => {
           {(data.description ?? '').trim() ? data.description : '설명이 없습니다.'}
         </p>
 
-        <LectureVideoPlayer
-          src={videoSrc}
-          title={data.title}
-          teacherGuides={data.analysis?.teacherGuides}
-        />
+        <LectureVideoPlayer src={videoSrc} title={data.title} />
       </section>
     </div>
   )
