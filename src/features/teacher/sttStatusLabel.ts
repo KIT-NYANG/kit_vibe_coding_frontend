@@ -13,5 +13,5 @@ export function formatSttStatusLabel(status: string): string {
 
 /** 강사 영상 목록 배지용: `자막생성 준비` 형태 */
 export function formatSttStatusBadge(status: string): string {
-  return `자막생성 ${formatSttStatusLabel(status)}`
+  return `AI 분석 ${formatSttStatusLabel(status)}`
 }

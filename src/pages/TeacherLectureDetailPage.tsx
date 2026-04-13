@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import type { TeacherLectureCard } from '../entities/teacher/types'
 import { useAuthSession } from '../features/auth/useAuthSession'
@@ -13,8 +13,8 @@ const CLIP_PAGE_SIZE = 10
 export const TeacherLectureDetailPage = () => {
   const { lectureId } = useParams()
   const navigate = useNavigate()
-  const { user, isLoggedIn } = useAuthSession()
-
+  const { user, isLoggedIn, isHydrated } = useAuthSession()
+  const pollingRef = useRef<number | null>(null)
   const [lecture, setLecture] = useState<TeacherLectureCard | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
@@ -54,6 +54,42 @@ export const TeacherLectureDetailPage = () => {
   useEffect(() => {
     void loadClips(0)
   }, [loadClips])
+
+  // sttStatus 변경 업데이트를 위한 useEffect
+  useEffect(() => {
+    const hasProcessingClip = clips.some((clip) => clip.sttStatus === 'PROCESSING')
+
+    if (!hasProcessingClip) {
+      if (pollingRef.current !== null) {
+        window.clearInterval(pollingRef.current)
+        pollingRef.current = null
+      }
+      return
+    }
+
+    if (pollingRef.current !== null) return
+
+    pollingRef.current = window.setInterval(() => {
+      void loadClips(clipPageIndex)
+    }, 5000)
+
+    return () => {
+      if (pollingRef.current !== null) {
+        window.clearInterval(pollingRef.current)
+        pollingRef.current = null
+      }
+    }
+  }, [clips, clipPageIndex, loadClips])
+
+  // 컴포넌트 unmount 시 interval 정리
+  useEffect(() => {
+    return () => {
+      if (pollingRef.current !== null) {
+        window.clearInterval(pollingRef.current)
+        pollingRef.current = null
+      }
+    }
+  }, [])
 
   const clipsPageRangeStart =
     clipsTotalElements === 0 ? 0 : clipPageIndex * CLIP_PAGE_SIZE + 1
@@ -101,6 +137,14 @@ export const TeacherLectureDetailPage = () => {
       cancelled = true
     }
   }, [lectureId])
+
+  if (!isHydrated) {
+    return (
+      <div className="rounded-2xl bg-palette-accent/12 p-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/12">
+        불러오는 중…
+      </div>
+    )
+  }
 
   if (!isLoggedIn || user?.role !== 'TEACHER') {
     return <Navigate replace to="/" />

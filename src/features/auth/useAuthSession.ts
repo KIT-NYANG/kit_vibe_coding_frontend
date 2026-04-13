@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { AuthUser } from '../../entities/auth/types'
 import { postLogin } from '../../shared/api/authApi'
 import { getAccessToken, getStoredAuthUser } from '../../shared/lib/tokenStorage'
@@ -9,6 +9,7 @@ export const useAuthSession = () => {
   const setSession = useAuthStore((s) => s.setSession)
   const hydrateUser = useAuthStore((s) => s.hydrateUser)
   const logoutStore = useAuthStore((s) => s.logout)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
     const token = getAccessToken()
@@ -16,6 +17,7 @@ export const useAuthSession = () => {
     if (token && stored) {
       hydrateUser(stored)
     }
+    setIsHydrated(true)
   }, [hydrateUser])
 
   const loginWithCredentials = useCallback(
@@ -38,6 +40,7 @@ export const useAuthSession = () => {
   return {
     user,
     isLoggedIn: user !== null,
+    isHydrated,
     loginWithCredentials,
     logout,
   }

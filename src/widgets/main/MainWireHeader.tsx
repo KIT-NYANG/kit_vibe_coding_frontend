@@ -20,9 +20,6 @@ const actionButtonClass =
 const primaryActionButtonClass =
   'inline-flex items-center gap-2 rounded-full bg-palette-primary px-3.5 py-2 text-sm font-semibold text-white transition hover:opacity-90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
 
-const userBadgeClass =
-  'inline-flex items-center gap-2 rounded-full bg-palette-accent/15 px-3 py-2 text-sm font-medium text-fg transition hover:bg-palette-accent/40 hover:text-palette-primary focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary'
-
 const disabledButtonClass =
   'inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-100 px-3 py-2 text-sm font-medium text-slate-400 cursor-not-allowed'
 
@@ -53,8 +50,8 @@ export const MainWireHeader = ({
         <div className="flex shrink-0 items-center gap-3 sm:gap-4">
           {isLoggedIn ? (
             <>
-              <div className={userBadgeClass}>
-                <UserLock aria-hidden className="h-4 w-4" strokeWidth={1.9} />
+              <div className="inline-flex items-center gap-2 text-sm font-medium text-fg">
+                <UserLock aria-hidden className="h-4 w-4 text-palette-primary" strokeWidth={1.9} />
                 <span>{welcomeName ?? '회원'}님 환영합니다!</span>
               </div>
 

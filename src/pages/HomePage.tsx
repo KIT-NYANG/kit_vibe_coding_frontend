@@ -139,6 +139,7 @@ const TeacherHomeContent = () => {
         onClose={() => setCreateLectureOpen(false)}
         onSubmit={async (payload) => {
           await addLecture(payload)
+          await refetch()
         }}
       />
     </>

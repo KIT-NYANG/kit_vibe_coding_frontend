@@ -86,6 +86,10 @@ export const useStudentMyPage = (): UseStudentMyPageResult => {
     }
   }, [])
 
+  const refetch = useCallback(async () => {
+    await fetchPage(pageIndex)
+  }, [fetchPage, pageIndex])
+
   useEffect(() => {
     void fetchPage(0)
   }, [categoryFilter, keywordFilter, fetchPage])
@@ -109,10 +113,6 @@ export const useStudentMyPage = (): UseStudentMyPageResult => {
     totalElements === 0 ? 0 : pageIndex * PAGE_SIZE + 1
   const pageRangeEnd = pageIndex * PAGE_SIZE + displayedLectures.length
   const currentPage = totalElements === 0 ? 0 : pageIndex + 1
-
-  const refetch = useCallback(async () => {
-    await fetchPage(pageIndex)
-  }, [fetchPage, pageIndex])
 
   return {
     displayedLectures,
