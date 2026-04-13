@@ -245,7 +245,7 @@ export const StudentLectureClassDetail = ({
             ))}
           </p>
         </div>
-
+        
         {clipsLoading ? (
           <p className="mt-6 text-center text-sm text-fg-subtle">영상 목록을 불러오는 중…</p>
         ) : clipsError ? (

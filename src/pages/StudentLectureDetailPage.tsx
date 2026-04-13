@@ -23,7 +23,7 @@ export const StudentLectureDetailPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const { openLoginModal } = useOutletContext<MainLayoutOutletContext>()
-  const { user, isLoggedIn } = useAuthSession()
+  const { user, isLoggedIn, isHydrated } = useAuthSession()
   const fromMyPage = Boolean(
     (location.state as StudentLectureLocationState | null)?.fromMyPage,
   )
@@ -300,16 +300,18 @@ export const StudentLectureDetailPage = () => {
       onBack={() => navigate(fromMyPage ? '/mypage' : '/')}
       enrollmentCta={enrollmentCta}
       enrollmentError={enrollError}
-      onClipWatch={
-        isEnrolled
-          ? (clip) =>
-              navigate(`/lecture/${lecture.id}/clip/${clip.id}/watch`, {
-                state: fromMyPage
-                  ? ({ fromMyPage: true } satisfies StudentLectureLocationState)
-                  : undefined,
-              })
-          : undefined
-      }
+      onClipWatch={(clip) => {
+        if (!isEnrolled) {
+          alert('수강 중인 강좌가 아닙니다. 먼저 수강 신청을 해주세요.')
+          return
+        }
+
+        navigate(`/lecture/${lecture.id}/clip/${clip.id}/watch`, {
+          state: fromMyPage
+            ? ({ fromMyPage: true } satisfies StudentLectureLocationState)
+            : undefined,
+        })
+      }}
       onClipsNext={goClipsNext}
       onClipsPrev={goClipsPrev}
       onRetryClips={() => void loadClips(clipPageIndex)}

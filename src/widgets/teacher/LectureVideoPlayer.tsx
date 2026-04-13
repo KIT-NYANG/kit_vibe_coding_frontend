@@ -14,13 +14,15 @@ interface LectureVideoPlayerProps {
   src: string
   /** GET /api/lectures/:id `analysis.teacherGuides` — 영상 하단 안내 */
   teacherGuides?: LecturePlaybackTeacherGuideDto[] | null
+  /** GET /api/lectures/:lectureId 로그 분석 완료 여부 */
+  logAnalysis?: boolean
 }
 
 /**
  * Vidstack 기반 플레이어 — WebVTT 자막 트랙은 추후 `MediaPlayer`에 트랙 추가로 연동 가능합니다.
  * @see https://vidstack.io/docs/react/player/core-concepts/loading#text-tracks
  */
-export const LectureVideoPlayer = ({ title, src, teacherGuides }: LectureVideoPlayerProps) => {
+export const LectureVideoPlayer = ({ title, src, teacherGuides, logAnalysis }: LectureVideoPlayerProps) => {
   const guides = teacherGuides?.filter(Boolean) ?? []
 
   return (
@@ -38,9 +40,15 @@ export const LectureVideoPlayer = ({ title, src, teacherGuides }: LectureVideoPl
         <div className="space-y-3">
           <div className="flex items-center justify-between gap-3">
           <div>
-          <h2 className="text-xl font-semibold text-fg">AI 추천 난이도 예상 구간 • 개선 제안</h2>
+          <h2 className="text-xl font-semibold text-fg">
+            {logAnalysis
+                ? '시청 로그 분석을 통한 AI 추천 난이도 예상 구간 • 개선 제안'
+                : 'AI 추천 난이도 예상 구간 • 개선 제안'}
+          </h2>
           <p className="mt-1 text-sm text-fg-subtle">
-              학생이 이해하기 어려울 수 있는 구간과 강의 보완 아이디어를 확인해보세요
+              {logAnalysis
+                ? '학생들이 자주 멈추거나 되돌려 본 구간을 AI가 분석해봤어요!'
+                : '학생이 이해하기 어려울 수 있는 구간과 강의 보완 아이디어를 확인해보세요'}
             </p>
           </div>
 

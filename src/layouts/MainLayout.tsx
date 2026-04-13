@@ -12,6 +12,11 @@ import type { MainLayoutOutletContext } from './mainLayoutContext'
 export const MainLayout = () => {
   const navigate = useNavigate()
   const { user, isLoggedIn, loginWithCredentials, logout } = useAuthSession()
+  // 로그아웃 시 메인 화면으로 이동하도록
+  const handleLogout = () => {
+    logout()
+    navigate('/', { replace: true })
+  }
   const sessionExpiredHint = useAuthStore((s) => s.sessionExpiredHint)
   const clearSessionExpiredHint = useAuthStore((s) => s.clearSessionExpiredHint)
   const { submitSignup } = useSignup()
@@ -36,7 +41,7 @@ export const MainLayout = () => {
         onWelcomeNameClick={
           isLoggedIn && user?.role === 'STUDENT' ? () => navigate('/mypage') : undefined
         }
-        onLogout={logout}
+        onLogout={handleLogout}
         onOpenLogin={() => setLoginModalOpen(true)}
         onOpenSignup={() => setSignupModalOpen(true)}
       />

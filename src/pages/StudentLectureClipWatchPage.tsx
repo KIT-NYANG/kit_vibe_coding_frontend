@@ -27,7 +27,7 @@ export const StudentLectureClipWatchPage = () => {
   const { lectureClassId, clipId } = useParams()
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn } = useAuthSession()
+  const { isLoggedIn, isHydrated } = useAuthSession()
   const fromMyPage = Boolean(
     (location.state as StudentLectureLocationState | null)?.fromMyPage,
   )
@@ -64,10 +64,18 @@ export const StudentLectureClipWatchPage = () => {
     }
   }, [clipId])
 
+  if (!isHydrated) {
+    return (
+      <div className="rounded-2xl bg-palette-accent/12 p-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/12">
+        불러오는 중…
+      </div>
+    )
+  }
+
   if (!isLoggedIn) {
     return <Navigate replace to="/" />
   }
-
+  
   if (loading) {
     return (
       <div className="rounded-2xl bg-palette-accent/12 p-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/12">
