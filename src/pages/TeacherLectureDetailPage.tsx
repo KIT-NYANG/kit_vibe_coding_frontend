@@ -5,6 +5,7 @@ import { useAuthSession } from '../features/auth/useAuthSession'
 import { mapLectureClassToCard } from '../features/teacher/mapLectureClassToCard'
 import { mapLectureClipToRow, type TeacherLectureClipRow } from '../features/teacher/mapLectureClipToRow'
 import {
+  deleteLecture,
   deleteLectureClass,
   getLectureClassById,
   getLectureClassLectures,
@@ -215,6 +216,16 @@ export const TeacherLectureDetailPage = () => {
     }
   }
 
+  const handleDeleteFailedClip = async (clip: TeacherLectureClipRow) => {
+    if (!window.confirm('AI 분석에 실패한 영상을 삭제할까요?')) return
+    try {
+      await deleteLecture(clip.id)
+      await loadClips(clipPageIndex)
+    } catch (e) {
+      window.alert(e instanceof Error ? e.message : '영상 삭제에 실패했습니다.')
+    }
+  }
+
   const lectureClassIdNumber = Number(lecture.id)
 
   return (
@@ -236,6 +247,7 @@ export const TeacherLectureDetailPage = () => {
         onAddClipClick={() => setAddClipOpen(true)}
         onBack={() => navigate('/')}
         onClipClick={(clip) => navigate(`/teacher/lecture/${lecture.id}/clip/${clip.id}`)}
+        onFailedClipDelete={handleDeleteFailedClip}
         onClipsNext={goClipsNext}
         onClipsPrev={goClipsPrev}
         onDeleteClick={handleDelete}
