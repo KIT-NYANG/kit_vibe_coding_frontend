@@ -42,6 +42,7 @@ interface TeacherLectureDetailProps {
   onRetryClips: () => void
   onAddClipClick: () => void
   onClipClick: (clip: TeacherLectureClipRow) => void
+  onFailedClipDelete: (clip: TeacherLectureClipRow) => void | Promise<void>
   clipsTotalElements: number
   clipsPageRangeStart: number
   clipsPageRangeEnd: number
@@ -65,6 +66,7 @@ export const TeacherLectureDetail = ({
   onRetryClips,
   onAddClipClick,
   onClipClick,
+  onFailedClipDelete,
   clipsTotalElements,
   clipsPageRangeStart,
   clipsPageRangeEnd,
@@ -91,7 +93,7 @@ export const TeacherLectureDetail = ({
       }
 
       if (clip.sttStatus === 'FAILED') {
-        alert('AI 분석에 실패했습니다. 삭제 후 다시 시도해주세요.')
+        void onFailedClipDelete(clip)
         return
       }
 
