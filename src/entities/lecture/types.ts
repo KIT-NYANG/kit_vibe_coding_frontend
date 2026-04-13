@@ -160,6 +160,8 @@ export interface LecturePlaybackDto {
   sttCompletedAt?: string | null
   /** STT 기반 구간 자막 — 플레이어 WebVTT 연동용 */
   segments?: LecturePlaybackSegmentDto[] | null
+  // 로그 분석 완료
+  logAnalysis?: boolean
   /** 퀴즈·난이도 가이드 등 부가 분석 */
   analysis?: LecturePlaybackAnalysisDto | null
 }

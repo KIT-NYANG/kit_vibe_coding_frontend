@@ -17,7 +17,7 @@ const formatDuration = (seconds: number): string => {
 export const TeacherLectureClipWatchPage = () => {
   const { lectureClassId, clipId } = useParams()
   const navigate = useNavigate()
-  const { user, isLoggedIn } = useAuthSession()
+  const { user, isLoggedIn, isHydrated } = useAuthSession()
 
   const [data, setData] = useState<LecturePlaybackDto | null>(null)
   const [loading, setLoading] = useState(true)
@@ -51,6 +51,14 @@ export const TeacherLectureClipWatchPage = () => {
       cancelled = true
     }
   }, [clipId])
+
+  if (!isHydrated) {
+    return (
+      <div className="rounded-2xl bg-palette-accent/12 p-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/12">
+        불러오는 중…
+      </div>
+    )
+  }
 
   if (!isLoggedIn || user?.role !== 'TEACHER') {
     return <Navigate replace to="/" />
@@ -151,6 +159,7 @@ export const TeacherLectureClipWatchPage = () => {
             src={videoSrc}
             title={data.title}
             teacherGuides={data.analysis?.teacherGuides}
+            logAnalysis={data.logAnalysis}
           />
         </div>
       </section>

@@ -7,7 +7,7 @@ import { House, NotepadText, Search, SlidersHorizontal, ChevronDown, RotateCcw }
 
 export const StudentMyPage = () => {
   const navigate = useNavigate()
-  const { user, isLoggedIn } = useAuthSession()
+  const { user, isLoggedIn, isHydrated } = useAuthSession()
 
   const {
     displayedLectures,
@@ -27,6 +27,14 @@ export const StudentMyPage = () => {
     refetch,
     resetFilters,
   } = useStudentMyPage()
+
+  if (!isHydrated) {
+    return (
+      <div className="rounded-2xl bg-palette-accent/12 p-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/12">
+        불러오는 중…
+      </div>
+    )
+  }
 
   if (!isLoggedIn) {
     return <Navigate replace to="/" />

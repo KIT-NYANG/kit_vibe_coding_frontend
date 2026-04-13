@@ -78,6 +78,26 @@ export const TeacherLectureDetail = ({
 }: TeacherLectureDetailProps) => {
   const iconBtnClass =
     'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-transparent text-palette-primary transition hover:bg-palette-accent/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-palette-primary disabled:pointer-events-none disabled:opacity-40'
+
+    const handleClipCardClick = (clip: TeacherLectureClipRow) => {
+      if (clip.sttStatus === 'COMPLETED') {
+        onClipClick(clip)
+        return
+      }
+
+      if (clip.sttStatus === 'PROCESSING') {
+        alert('AI 분석 중이니 완료될 때까지 기다려주세요.')
+        return
+      }
+
+      if (clip.sttStatus === 'FAILED') {
+        alert('AI 분석에 실패했습니다. 삭제 후 다시 시도해주세요.')
+        return
+      }
+
+      alert('아직 분석 상태를 확인할 수 없습니다.')
+    }
+
   return (
     <div className="mx-auto w-full max-w-7xl space-y-6">
       <button
@@ -249,7 +269,7 @@ export const TeacherLectureDetail = ({
                   <button
                     type="button"
                     className="group flex w-full gap-3 rounded-2xl border border-palette-primary/10 bg-white/85 p-3.5 text-left shadow-sm ring-1 ring-palette-primary/8 transition duration-200 hover:-translate-y-0.5 hover:shadow-md hover:ring-palette-primary/25 focus-visible:outline focus-visible:ring-2 focus-visible:ring-palette-primary"
-                    onClick={() => onClipClick(clip)}
+                    onClick={() => handleClipCardClick(clip)}
                   >
                     <div className="relative h-[5rem] w-32 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-palette-accent/35 via-white to-palette-primary/10">
                       <img
