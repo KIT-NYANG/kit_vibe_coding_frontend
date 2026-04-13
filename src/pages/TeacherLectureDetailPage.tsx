@@ -20,11 +20,14 @@ export const TeacherLectureDetailPage = () => {
   const { lectureId } = useParams()
   const navigate = useNavigate()
   const { user, isLoggedIn, isHydrated } = useAuthSession()
+
   const pollingRef = useRef<number | null>(null)
+
   const [lecture, setLecture] = useState<TeacherLectureCard | null>(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
   const [deletePending, setDeletePending] = useState(false)
+
   const [clips, setClips] = useState<TeacherLectureClipRow[]>([])
   const [clipPageIndex, setClipPageIndex] = useState(0)
   const [clipsTotalElements, setClipsTotalElements] = useState(0)
@@ -33,35 +36,54 @@ export const TeacherLectureDetailPage = () => {
   const [clipsLast, setClipsLast] = useState(true)
   const [clipsLoading, setClipsLoading] = useState(true)
   const [clipsError, setClipsError] = useState<string | null>(null)
+
   const [addClipOpen, setAddClipOpen] = useState(false)
 
-  const loadClips = useCallback(async (pageNum: number) => {
-    if (!lectureId?.trim()) return
-    setClipsLoading(true)
-    setClipsError(null)
-    try {
-      const res = await getLectureClassLectures(lectureId, {
-        page: pageNum,
-        size: CLIP_PAGE_SIZE,
-      })
-      setClips(res.content.map(mapLectureClipToRow))
-      setClipPageIndex(res.page)
-      setClipsTotalElements(res.totalElements)
-      setClipsTotalPages(res.totalPages)
-      setClipsFirst(res.first)
-      setClipsLast(res.last)
-    } catch (e) {
-      setClipsError(e instanceof Error ? e.message : '영상 목록을 불러오지 못했습니다.')
-    } finally {
-      setClipsLoading(false)
-    }
-  }, [lectureId])
+  const loadClips = useCallback(
+    async (pageNum: number, silent = false) => {
+      if (!lectureId?.trim()) return
+
+      if (!silent) {
+        setClipsLoading(true)
+      }
+
+      if (!silent) {
+        setClipsError(null)
+      }
+
+      try {
+        const res = await getLectureClassLectures(lectureId, {
+          page: pageNum,
+          size: CLIP_PAGE_SIZE,
+        })
+
+        setClips(res.content.map(mapLectureClipToRow))
+        setClipPageIndex(res.page)
+        setClipsTotalElements(res.totalElements)
+        setClipsTotalPages(res.totalPages)
+        setClipsFirst(res.first)
+        setClipsLast(res.last)
+
+        if (!silent) {
+          setClipsError(null)
+        }
+      } catch (e) {
+        if (!silent) {
+          setClipsError(e instanceof Error ? e.message : '영상 목록을 불러오지 못했습니다.')
+        }
+      } finally {
+        if (!silent) {
+          setClipsLoading(false)
+        }
+      }
+    },
+    [lectureId],
+  )
 
   useEffect(() => {
-    void loadClips(0)
+    void loadClips(0, false)
   }, [loadClips])
 
-  // sttStatus 변경 업데이트를 위한 useEffect
   useEffect(() => {
     const hasProcessingClip = clips.some((clip) => clip.sttStatus === 'PROCESSING')
 
@@ -76,7 +98,7 @@ export const TeacherLectureDetailPage = () => {
     if (pollingRef.current !== null) return
 
     pollingRef.current = window.setInterval(() => {
-      void loadClips(clipPageIndex)
+      void loadClips(clipPageIndex, true)
     }, 5000)
 
     return () => {
@@ -87,7 +109,6 @@ export const TeacherLectureDetailPage = () => {
     }
   }, [clips, clipPageIndex, loadClips])
 
-  // 컴포넌트 unmount 시 interval 정리
   useEffect(() => {
     return () => {
       if (pollingRef.current !== null) {
@@ -97,23 +118,21 @@ export const TeacherLectureDetailPage = () => {
     }
   }, [])
 
-  const clipsPageRangeStart =
-    clipsTotalElements === 0 ? 0 : clipPageIndex * CLIP_PAGE_SIZE + 1
+  const clipsPageRangeStart = clipsTotalElements === 0 ? 0 : clipPageIndex * CLIP_PAGE_SIZE + 1
   const clipsPageRangeEnd = clipPageIndex * CLIP_PAGE_SIZE + clips.length
-  const clipsCurrentPageDisplay =
-    clipsTotalElements === 0 ? 0 : clipPageIndex + 1
+  const clipsCurrentPageDisplay = clipsTotalElements === 0 ? 0 : clipPageIndex + 1
   const clipsShowPagination = clipsTotalPages > 1
   const clipsCanGoPrev = !clipsFirst
   const clipsCanGoNext = !clipsLast
 
   const goClipsPrev = () => {
     if (clipsFirst) return
-    void loadClips(clipPageIndex - 1)
+    void loadClips(clipPageIndex - 1, false)
   }
 
   const goClipsNext = () => {
     if (clipsLast) return
-    void loadClips(clipPageIndex + 1)
+    void loadClips(clipPageIndex + 1, false)
   }
 
   useEffect(() => {
@@ -122,10 +141,13 @@ export const TeacherLectureDetailPage = () => {
       setNotFound(true)
       return
     }
+
     let cancelled = false
+
     void (async () => {
       setLoading(true)
       setNotFound(false)
+
       try {
         const dto = await getLectureClassById(lectureId)
         if (cancelled) return
@@ -139,6 +161,7 @@ export const TeacherLectureDetailPage = () => {
         if (!cancelled) setLoading(false)
       }
     })()
+
     return () => {
       cancelled = true
     }
@@ -181,6 +204,7 @@ export const TeacherLectureDetailPage = () => {
 
   const handleDelete = async () => {
     if (!window.confirm(`「${lecture.title}」 강의를 삭제할까요?`)) return
+
     setDeletePending(true)
     try {
       await deleteLectureClass(lecture.id)
@@ -227,15 +251,16 @@ export const TeacherLectureDetailPage = () => {
         onClipsNext={goClipsNext}
         onClipsPrev={goClipsPrev}
         onDeleteClick={handleDelete}
-        onRetryClips={() => void loadClips(clipPageIndex)}
+        onRetryClips={() => void loadClips(clipPageIndex, false)}
       />
+
       <AddLectureClipModal
         lectureClassId={lectureClassIdNumber}
         open={addClipOpen}
         onClose={() => setAddClipOpen(false)}
         onSubmit={async (payload) => {
           await postLecture(payload)
-          await loadClips(0)
+          await loadClips(0, false)
         }}
       />
     </>
