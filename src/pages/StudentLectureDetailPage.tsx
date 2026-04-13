@@ -258,6 +258,13 @@ export const StudentLectureDetailPage = () => {
     handleCancelEnrollment,
     cancelSubmitting,
   ])
+  if (!isHydrated) {
+    return (
+      <div className="rounded-2xl bg-palette-accent/12 p-10 text-center text-sm text-fg-subtle ring-1 ring-palette-primary/12">
+        불러오는 중…
+      </div>
+    )
+  }
 
   if (loading) {
     return (
